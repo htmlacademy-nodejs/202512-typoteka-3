@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "target": "es2015",
-    "module": "es6",
+    "module": "commonJS",
     "checkJs": true
   }
 }

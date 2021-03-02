@@ -6,6 +6,7 @@ module.exports = {
 
         Гайд:
           service.js <command>
+
           Команды:
           --version:            выводит номер версии
           --help:               печатает этот текст

@@ -1,11 +1,16 @@
+const fs = require(`fs`);
 const {
-  getRandomInt
+  getRandomInt,
+  shuffle
 } = require(`../../utils`);
+const {
+  ExitCode
+} = require(`../../constants`);
 
-const PublicationsCount = {
-  MIN: 1,
-  MAX: 1000
-};
+
+const FILE_NAME = `mocks.json`;
+
+const ANNOUNCE_RESTRICT = 5;
 
 const TITLES = [
   `Ёлки. История деревьев`,
@@ -45,6 +50,23 @@ const SENTENCES = [
   `Альбом стал настоящим открытием года. Мощные гитарные рифы и скоростные соло-партии не дадут заскучать.`
 ];
 
+const CATEGORIES = [
+  `Деревья`,
+  `За жизнь`,
+  `Без рамки`,
+  `Разное`,
+  `IT`,
+  `Музыка`,
+  `Кино`,
+  `Программирование`,
+  `Железо`
+];
+
+const PublicationsRestrict = {
+  MIN: 1,
+  MAX: 1000
+};
+
 /**
  * Генерирует дату публикации
  * @return {string}
@@ -55,24 +77,46 @@ const getDate = () => {
   const minDate = new Date();
   minDate.setMonth(minDate.getMonth() - getRandomInt(0, maxMonthGap));
   const diff = Date.now() - minDate.valueOf();
-  const publicationDate = new Date(Date.now() - getRandomInt(0, diff))
+  const publicationDate = new Date(Date.now() - getRandomInt(0, diff));
 
   return publicationDate.toISOString();
-}
+};
 
 /**
  * Генерирует моки публикаций
  * @param {number} count
- * @return
+ * @return {{ title: string, createdDate: string, announce: string, fullText: string, category: string[] }[]}
  */
-const generatePublications = (count) => {
-  return {}
-}
+const generatePublications = (count) => (
+  Array(count).fill(``).map(() => ({
+    title: shuffle(TITLES)[getRandomInt(0, TITLES.length - 1)],
+    createdDate: getDate(),
+    announce: shuffle(SENTENCES).slice(0, getRandomInt(1, ANNOUNCE_RESTRICT)).join(` `),
+    fullText: shuffle(SENTENCES).slice(0, getRandomInt(0, SENTENCES.length)).join(` `),
+    category: shuffle(CATEGORIES).slice(0, getRandomInt(1, CATEGORIES.length))
+  }))
+);
 
 module.exports = {
   name: `--generate`,
   run(args) {
     const [count] = args;
-    const countPublications = Number.parseInt(count, 10) || PublicationsCount.MIN;
+    let countPublications = Number.parseInt(count, 10) || PublicationsRestrict.MIN;
+
+    if (countPublications > PublicationsRestrict.MAX) {
+      console.info(`Notify: max publications count ${PublicationsRestrict.MAX}`);
+      countPublications = PublicationsRestrict.MAX;
+    }
+
+    const content = JSON.stringify(generatePublications(countPublications));
+
+    fs.writeFile(FILE_NAME, content, (err) => {
+      if (err) {
+        console.error(`Can't write data to file`);
+        process.exit(ExitCode.exception);
+      }
+
+      return console.info(`Operation success. File created`);
+    });
   }
 };
