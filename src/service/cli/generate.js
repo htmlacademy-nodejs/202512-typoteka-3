@@ -115,8 +115,8 @@ module.exports = {
       await fs.writeFile(FILE_NAME, content);
       console.info(chalk.green(`Operation success. File created`));
       process.exit(ExitCode.success);
-    } catch {
-      console.error(chalk.red(`Can't write data to file`));
+    } catch (ex) {
+      console.error(chalk.red(`Can't write data to file : ${ex}`));
       process.exit(ExitCode.exception);
     }
   }
