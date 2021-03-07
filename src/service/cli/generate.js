@@ -1,4 +1,4 @@
-const fs = require(`fs`);
+const fs = require(`fs`).promises;
 const {
   getRandomInt,
   shuffle
@@ -6,6 +6,7 @@ const {
 const {
   ExitCode
 } = require(`../../constants`);
+const chalk = require(`chalk`);
 
 
 const FILE_NAME = `mocks.json`;
@@ -99,7 +100,7 @@ const generatePublications = (count) => (
 
 module.exports = {
   name: `--generate`,
-  run(args) {
+  async run(args) {
     const [count] = args;
     let countPublications = Number.parseInt(count, 10) || PublicationsRestrict.MIN;
 
@@ -110,13 +111,13 @@ module.exports = {
 
     const content = JSON.stringify(generatePublications(countPublications));
 
-    fs.writeFile(FILE_NAME, content, (err) => {
-      if (err) {
-        console.error(`Can't write data to file`);
-        process.exit(ExitCode.exception);
-      }
-
-      return console.info(`Operation success. File created`);
-    });
+    try {
+      await fs.writeFile(FILE_NAME, content);
+      console.info(chalk.green(`Operation success. File created`));
+      process.exit(ExitCode.success);
+    } catch (ex) {
+      console.error(chalk.red(`Can't write data to file : ${ex}`));
+      process.exit(ExitCode.exception);
+    }
   }
 };
