@@ -30,7 +30,7 @@ const PublicationsRestrict = {
 const readContent = async (filePath) => {
   try {
     const content = await fs.readFile(filePath, ENCODING);
-    return content.split();
+    return content.split(`\n`);
   } catch (ex) {
     console.log(chalk.red(ex));
     return [];
