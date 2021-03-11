@@ -4,7 +4,8 @@ const {
   shuffle
 } = require(`../../utils`);
 const {
-  ExitCode
+  ExitCode,
+  ORANGE
 } = require(`../../constants`);
 const chalk = require(`chalk`);
 
@@ -77,7 +78,7 @@ module.exports = {
     let countPublications = Number.parseInt(count, 10) || PublicationsRestrict.MIN;
 
     if (countPublications > PublicationsRestrict.MAX) {
-      console.info(`Notify: max publications count ${PublicationsRestrict.MAX}`);
+      console.info(chalk.hex(ORANGE)(`Notify: max publications count ${PublicationsRestrict.MAX}`));
       countPublications = PublicationsRestrict.MAX;
     }
 
