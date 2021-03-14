@@ -1,0 +1,7 @@
+ul.themes
+  each category in categories
+    - var additionalClass = category === currentCategory ? 'themes__item-link--active' : '';
+    li.themes__item
+      a.themes__item-link(href='#' class=additionalClass)
+        | #{category}
+        sup 88

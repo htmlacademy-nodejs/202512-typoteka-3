@@ -1,0 +1,28 @@
+extends ../layouts/layout
+
+block content
+  h1.visually-hidden Регистрация пользователя
+  section
+    .popup.popup--registration.popup--anti
+      a.popup__button.button.button--popup-close(aria-label='Закрыть окно')
+        | Закрыть окно
+      h2.popup__title Регистрация
+      .popup__form.popup__form--active.form.form--register
+        form(action='#' method='get')
+          - var fields = [{type:'email',name:'email',placeholder:'Электронная почта',isRequired:false},{type:'text',name:'name',placeholder:'Имя',isRequired:false}, {type:'text',name:'surname',placeholder:'Фамилия',isRequired:false}, {type:'password',name:'password',placeholder:'Пароль',isRequired:true}, {type:'password',name:'repeat-password',placeholder:'Повтор пароля',isRequired:true}]
+          each field in fields
+            include ../components/form-field
+          - var errors = ['Пароль не может состоять из двух букв', 'Фамилия не должна быть смешной'];
+            if (errors.length)
+              .form__validation-error
+                p.form__error-message При регистрации произошли ошибки:
+                ul.form__errors
+                  each error in errors
+                    li.form__error #{error}
+          .form__image-loader
+            a.form__avatar.avatar
+              img(src='/img/icons/smile.svg' alt='аватар пользователя')
+            label
+              input.visually-hidden(type='file' name='upload')
+              | Загрузить фото профиля
+          button.form__submit-btn.form__submit-btn--register.button.button--colored(type='submit') Зарегистрироваться

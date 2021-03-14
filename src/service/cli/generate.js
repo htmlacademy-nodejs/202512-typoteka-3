@@ -67,7 +67,7 @@ const generatePublications = (count, titles, sentences, categories) => (
     createdDate: getDate(),
     announce: shuffle(sentences).slice(0, getRandomInt(1, ANNOUNCE_RESTRICT)).join(` `),
     fullText: shuffle(sentences).slice(0, getRandomInt(0, sentences.length)).join(` `),
-    category: shuffle(categories).slice(0, getRandomInt(1, categories.length))
+    categories: shuffle(categories).slice(0, getRandomInt(1, categories.length))
   }))
 );
 
