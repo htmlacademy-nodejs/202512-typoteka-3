@@ -1,0 +1,26 @@
+extends ../layouts/layout
+
+block content
+  h1.visually-hidden Регистрация пользователя
+  section
+    .popup.popup--registration.popup--anti
+      a.popup__button.button.button--popup-close(aria-label='Закрыть окно')
+        | Закрыть окно
+      h2.popup__title Регистрация
+      .popup__form.popup__form--active.form.form--register
+        form(action='#' method='get')
+          each field in fields
+            include ../components/form-field
+          if (errors.length)
+            .form__validation-error
+              p.form__error-message При регистрации произошли ошибки:
+              ul.form__errors
+                each error in errors
+                  li.form__error #{error}
+          .form__image-loader
+            a.form__avatar.avatar
+              img(src='/img/icons/smile.svg' alt='аватар пользователя')
+            label
+              input.visually-hidden(type='file' name='upload')
+              | Загрузить фото профиля
+          button.form__submit-btn.form__submit-btn--register.button.button--colored(type='submit') Зарегистрироваться

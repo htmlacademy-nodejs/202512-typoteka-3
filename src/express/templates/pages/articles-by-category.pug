@@ -1,0 +1,19 @@
+extends ../layouts/layout
+block variables
+  - var mainClass = 'articles-category';
+
+block content
+    h1 #{currentCategory.displayName}
+
+    if(posts.length)
+      section.articles-category__theme-list
+        h2.visually-hidden Список тем
+        include ../components/categories
+      - additionalClass = `articles-category__list`;
+      include ../components/preview
+      .preview__toggle-wrapper
+        - additionalClass = `preview__pagination`;
+        include ../components/pagination
+    else
+      .main-page__empty-wrapper
+        p.main-page__empty-text Здесь пока пусто!
