@@ -4,7 +4,7 @@ li.preview__item
       li.preview__breadcrumbs-item
         a.preview__breadcrumbs-link(href='#') #{category}
   .preview__background
-    if (posts.image && post.image.src)
+    if (post.image && post.image.src)
       img.preview__background-image(src=post.image.src width='460' height='240' srcset=post.image.src alt=post.image.title)
   time.preview__time(datetime=post.createdDate) #{post.dateDisplay}
   h3.preview__name

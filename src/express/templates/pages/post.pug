@@ -12,8 +12,9 @@ block content
           h2.post__title.title.title--main AirPods в один клик
           - var additionalClass = `post__themes`;
           include ../components/categories
-        .post__picture
-          img(src='/img/sea-fullsize@1x.jpg' alt='пейзаж море, скалы, пляж')
+        if (picture)
+          .post__picture
+            img(src='/img/sea-fullsize@1x.jpg' alt='пейзаж море, скалы, пляж')
         .post__text
           h3 Бирюзовое доверие
           p
@@ -29,49 +30,33 @@ block content
             | случается, и операцию нужно повторить, выполняя все те же клики-ожидания-клики — бесит.
     .post__wrapper.post__wrapper--comments
       section.post__comments.comments
-        h2.comments__title.title.title--middle Комментарии
-        ul.comments__list
-          li.comments__comment
-            .comments__avatar.avatar
-              img(src='/img/avatar-1.png' alt='аватар пользователя')
-            .comments__text
-              .comments__head
-                p Евгений Петров •
-                time.comments__date(datetime='2019-03-21T20:33') 21.03.2019, 20:33
-              p.comments__message Автор, ты все выдумал, покайся
-          li.comments__comment
-            .comments__avatar.avatar
-              img(src='/img/avatar-5.png' alt='аватар пользователя')
-            .comments__text
-              .comments__head
-                p Александр Марков •
-                time.comments__date(datetime='2019-03-21T20:33') 21.03.2019, 20:33
-              p.comments__message
-                | Конечно, прежде чем так писать, нужно
-                | искренне
-                | приложить усилия, чтобы разобраться — не все люди умеют выражать свои мысли.
-          li.comments__comment
-            .comments__avatar.avatar
-              img(src='/img/avatar-4.png' alt='аватар пользователя')
-            .comments__text
-              .comments__head
-                p Евгений Петров •
-                time.comments__date(datetime='2019-03-21T20:33') 21.03.2019, 20:33
-              p.comments__message Автор, ты все выдумал, покайся
-          li.comments__comment
-            .comments__avatar.avatar
-              img(src='/img/avatar-3.png' alt='аватар пользователя')
-            .comments__text
-              .comments__head
-                p Александр Марков •
-                time.comments__date(datetime='2019-03-21T20:33') 21.03.2019, 20:33
-              p.comments__message
-                | Конечно, прежде чем так писать, нужно
-                | искренне приложить усилия, чтобы разобраться — не все люди умеют выражать свои мысли.
-        .comments__footer.comments__footer--user
-          form(action='#' method='POST')
-            .comments__avatar.avatar
-              img(src='/img/avatar-2.png' alt='аватар пользователя')
-            label
-              textarea(rows='1' name='message' placeholder='Присоединиться к обсуждению')
-            button.comments__button.button.button--colored(type='submit') Опубликовать
+        - var title = comments.length ? 'Комментарии' : 'Комментарии отсутствуют';
+        h2.comments__title.title.title--middle #{title}
+        if (comments.length)
+          ul.comments__list
+            each comment in comments
+              li.comments__comment
+                .comments__avatar.avatar
+                  img(src=comment.avatar alt='аватар пользователя')
+                .comments__text
+                  .comments__head
+                    p #{comment.author} •
+                    time.comments__date(datetime=comment.createdDate) #{comment.dateDisplay}
+                  p.comments__message #{comment.message}
+        if (isUser || isAdmin)
+          .comments__footer.comments__footer--user
+            form(action='#' method='POST')
+              .comments__avatar.avatar
+                img(src='/img/avatar-2.png' alt='аватар пользователя')
+              label
+                textarea(rows='1' name='message' placeholder='Присоединиться к обсуждению')
+              button.comments__button.button.button--colored(type='submit') Опубликовать
+            p.comments__error Сообщение не может быть пустым, напишите что-нибудь!
+        if (!(isUser || isAdmin))
+          .comments__footer.comments__footer--visitor
+            button.comments__button.button.button--colored(type='submit') Войти
+            .comments__registration
+              p.text.text--signature
+                b.title.title--small Регистрация
+                | Чтобы присоединиться к переписке нужно зарегистрироваться
+

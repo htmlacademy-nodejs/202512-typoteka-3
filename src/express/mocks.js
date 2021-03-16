@@ -156,21 +156,39 @@ const LoginOptions = {
     }
   ]
 };
-const comments = [];
+const comments = [
+  {
+    author: `Евгений Петров`,
+    avatar: `/img/avatar-1.png`,
+    createdDate: `2019-03-21T20:33`,
+    message: `Автор, ты все выдумал, покайся`
+  },
+  {
+    author: `Александр Марков`,
+    avatar: `/img/avatar-4.png`,
+    createdDate: `2019-03-21T20:33`,
+    message: `Конечно, прежде чем так писать, нужно искренне приложить усилия, чтобы разобраться — не все люди умеют выражать свои мысли.`
+  }
+];
+
 const results = [];
 
-posts.forEach((post) => {
-  post.dateDisplay = new Intl.DateTimeFormat(`ru-RU`,
-      {
-        year: `numeric`,
-        month: `numeric`,
-        day: `numeric`,
-        [`hour12`]: false,
-        hour: `numeric`,
-        minute: `numeric`
-      }
-  ).format(new Date(post.createdDate));
-});
+const formatDate = (item) => {
+  item.dateDisplay = new Intl.DateTimeFormat(`ru-RU`,
+    {
+      year: `numeric`,
+      month: `numeric`,
+      day: `numeric`,
+      [`hour12`]: false,
+      hour: `numeric`,
+      minute: `numeric`
+    }
+  ).format(new Date(item.createdDate));
+}
+
+comments.push(...comments);
+posts.forEach(formatDate);
+comments.forEach(formatDate);
 
 module.exports = {
   posts,
