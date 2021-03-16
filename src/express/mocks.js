@@ -175,16 +175,16 @@ const results = [];
 
 const formatDate = (item) => {
   item.dateDisplay = new Intl.DateTimeFormat(`ru-RU`,
-    {
-      year: `numeric`,
-      month: `numeric`,
-      day: `numeric`,
-      [`hour12`]: false,
-      hour: `numeric`,
-      minute: `numeric`
-    }
+      {
+        year: `numeric`,
+        month: `numeric`,
+        day: `numeric`,
+        [`hour12`]: false,
+        hour: `numeric`,
+        minute: `numeric`
+      }
   ).format(new Date(item.createdDate));
-}
+};
 
 comments.push(...comments);
 posts.forEach(formatDate);

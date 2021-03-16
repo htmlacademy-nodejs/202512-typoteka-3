@@ -12,10 +12,10 @@ articlesRouter.get(`/add`, (req, res) => res.render(`pages/new-post`,
     })
 );
 articlesRouter.get(`/edit/:id`, (req, res) => res.render(`pages/new-post`,
-  {
-    isAdmin: true,
-    ...posts[0]
-  })
+    {
+      isAdmin: true,
+      ...posts[0]
+    })
 );
 
 articlesRouter.get(`/category/:id`, (req, res) => {
