@@ -10,7 +10,6 @@ block content
       h2.popup__title Войти
       .popup__form.form.form--log-in
         form(action='#' method='get')
-          - var fields = [{type:'email',name:'email',placeholder:'Электронная почта',isRequired:true},{type:'password',name:'password',placeholder:'Пароль',isRequired:true}]
           each field in fields
             include ../components/form-field
           p.form__error-message Некоторая ошибка произошла, беда!

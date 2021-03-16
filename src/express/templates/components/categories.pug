@@ -1,7 +1,9 @@
-ul.themes
+ul.themes(class=additionalClass)
   each category in categories
-    - var additionalClass = category === currentCategory ? 'themes__item-link--active' : '';
+    if (currentCategory)
+      - var additionalClass = category.name === currentCategory.name ? 'themes__item-link--active' : '';
     li.themes__item
-      a.themes__item-link(href='#' class=additionalClass)
-        | #{category}
+      a.themes__item-link(href='/articles/category/' + category.name class=additionalClass)
+        | #{category.displayName}
         sup 88
+      button.themes__remove-btn(type='button') Удалить категорию

@@ -1,5 +1,5 @@
 header.header
-  a.header__logo.logo(href='#')
+  a.header__logo.logo(href='/')
     img.logo__image(src='/img/icons/logo-image-only.svg' alt='логотип Тайпотеки')
     span.logo__name Типотека
   if (isAdmin)
@@ -11,22 +11,22 @@ header.header
         while n < 4
           - n++
           li.navigation__item
-            a(href='/main') Пункт меню
+            a(href='/') Пункт меню
   else
     nav.header__nav
       ul.header__nav-list
         if (isGuest)
           li.header__list-item
-            a.header__popup(href='#') Регистрация
+            a.header__popup(href='/register') Регистрация
           li.header__list-item
-            a.header__enter(href='#') Вход с паролем
+            a.header__enter(href='/login') Вход с паролем
         if (isUser)
             li.header__list-item
               p Алёна Фролова
             li.header__list-item
-              a.header__exit(href='#') Выйти
+              a.header__exit(href='/logout') Выйти
     if (isUser)
       a.header__avatar.avatar
         img(src='/img/avatar-2.png' alt='аватар пользователя')
-  a.header__search.button.button--search(href='#' aria-label='поиск по сайту')
+  a.header__search.button.button--search(href='/search' aria-label='поиск по сайту')
 

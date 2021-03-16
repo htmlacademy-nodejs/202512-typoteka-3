@@ -1,7 +1,4 @@
 - var mainClass = '';
-- var isGuest = true;
-- var isAdmin = false;
-- var isUser = !(isAdmin || isGuest);
 block variables
 
 doctype html
@@ -22,5 +19,6 @@ html(lang='ru')
       main(class=mainClass)
         block content
       include ../components/footer
-  script(src='js/vendor.js')
-  script(src='js/main.js')
+
+  script(src='/js/vendor.js')
+  script(src='/js/main.js')

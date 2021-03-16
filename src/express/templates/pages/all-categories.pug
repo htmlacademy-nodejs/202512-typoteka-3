@@ -1,3 +1,26 @@
 extends ../layouts/layout
 
+block variables
+  - var mainClass = `main-page--padding`;
+
 block content
+  main.main-page
+    section.main-page__category.category
+      h1.category__title Категории
+      .category__add-form
+        form(action='#' method='POST')
+          input#add-form-add-category(type='text' name='add-category' placeholder='Новая категория')
+          label(for='add-form-add-category')
+            span.visually-hidden Добавить категорию
+          button.category__button.button.button--category(type='submit') Добавить
+      ul.category__list
+        each category, i in categories
+          - var id = 'modify-form' + category.name
+          - var additionalClass = i === categories.length - 1 ? 'category__list-item--last' : '';
+          li.category__list-item(class=additionalClass)
+            form(action='#' method='POST')
+              input(id=id type='text' name=category.name value=category.displayName)
+              label(for='id')
+                span.visually-hidden Редактировать категорию
+              button.category__button.button.button--category(type='submit') Сохранить
+              button.category__button.button.button--category(type='button') Удалить

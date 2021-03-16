@@ -1,7 +1,6 @@
 extends ../layouts/layout
 
 block content
-  - var results = [];
   - var additionalClass = results && results.length ? '' : 'search-page__wrapper--empty';
   section.search-page
     .search-page__wrapper(class=additionalClass)
@@ -13,10 +12,9 @@ block content
           button.search__button.button.button--transparent(type='submit') Найти
       if (results && results.length)
         each result in results
-          - var dateDisplay = new Intl.DateTimeFormat('ru-RU', { year: 'numeric', month: 'numeric', day: 'numeric', ['hour12']: false, hour: 'numeric', minute: 'numeric'}).format(new Date(result.createdDate))
-        .search__result
-          time.search__date(datetime=result.createdDate) #{dateDisplay}
-          a.search__link
-            #{result.announce}
+          .search__result
+            time.search__date(datetime=result.createdDate) #{result.dateDisplay}
+            a.search__link
+              #{result.announce}
       else if (results.length === 0)
         p.search-page__empty Ничего не нашлось
