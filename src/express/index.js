@@ -24,5 +24,5 @@ app.use(`/my`, myRoutes);
 app.use(`*`, (req, res) => res.render(`pages/404`, {isGuest: true}));
 
 app.listen(DEFAULT_PORT, () => {
-  console.log(chalk.bgBlueBright.black(`Сервер запущен на порту ${DEFAULT_PORT}`));
+  console.log(chalk.bgBlueBright.black(`Ожидаю соединений на ${DEFAULT_PORT}`));
 });
