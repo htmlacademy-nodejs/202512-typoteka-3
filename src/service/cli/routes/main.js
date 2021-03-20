@@ -1,5 +1,8 @@
 const {Router} = require(`express`);
 const fs = require(`fs`).promises;
+const {
+  HttpCode
+} = require(`../../../constants`);
 
 const FILENAME = `mocks.json`;
 
@@ -12,7 +15,7 @@ mainRouter.get(`/posts`, async (req, res) => {
     const mocks = JSON.parse(fileContent);
     res.json(mocks);
   } catch (ex) {
-    res.json([]);
+    res.status(HttpCode.BAD_REQUEST).send({ error: ex });
   }
 });
 
