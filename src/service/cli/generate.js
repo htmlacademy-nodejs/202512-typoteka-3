@@ -1,23 +1,28 @@
 const fs = require(`fs`).promises;
+const {nanoid} = require(`nanoid`);
+const chalk = require(`chalk`);
 const {
   getRandomInt,
   shuffle
 } = require(`../../utils`);
 const {
   ExitCode,
-  ORANGE
+  ORANGE,
+  MAX_ID_LENGTH,
+  ENCODING
 } = require(`../../constants`);
-const chalk = require(`chalk`);
-
 
 const FILE_NAME = `mocks.json`;
-const ANNOUNCE_RESTRICT = 5;
-const ENCODING = `utf-8`;
 const FilePath = {
   TITLES: `./data/titles.txt`,
   SENTENCES: `./data/sentences.txt`,
-  CATEGORIES: `./data/categories.txt`
+  CATEGORIES: `./data/categories.txt`,
+  COMMENTS: `./data/comments.txt`
 };
+
+const MAX_COMMENTS = 4;
+const COMMENT_RESTRICT = 3;
+const ANNOUNCE_RESTRICT = 5;
 
 const PublicationsRestrict = {
   MIN: 1,
@@ -53,21 +58,33 @@ const getDate = () => {
   return publicationDate.toISOString();
 };
 
+const generateComments = (count, comments) => (
+  Array(count).fill(``).map(() => ({
+    id: nanoid(MAX_ID_LENGTH),
+    text: shuffle(comments)
+      .slice(0, getRandomInt(1, COMMENT_RESTRICT))
+      .join(` `)
+  }))
+)
+
 /**
  * Генерирует моки публикаций
  * @param {number} count
  * @param {Array<string>} titles
  * @param {Array<string>} sentences
  * @param {Array<string>} categories
+ * @param {Array<string>} comments
  * @return {Array<{ title: string, createdDate: string, announce: string, fullText: string, category: Array<string> }>}
  */
-const generatePublications = (count, titles, sentences, categories) => (
+const generatePublications = (count, titles, sentences, categories, comments) => (
   Array(count).fill(``).map(() => ({
+    id: nanoid(MAX_ID_LENGTH),
     title: shuffle(titles)[getRandomInt(0, titles.length - 1)],
     createdDate: getDate(),
     announce: shuffle(sentences).slice(0, getRandomInt(1, ANNOUNCE_RESTRICT)).join(` `),
     fullText: shuffle(sentences).slice(0, getRandomInt(0, sentences.length)).join(` `),
-    categories: shuffle(categories).slice(0, getRandomInt(1, categories.length))
+    categories: shuffle(categories).slice(0, getRandomInt(1, categories.length)),
+    comments: generateComments(getRandomInt(1, MAX_COMMENTS), comments)
   }))
 );
 
@@ -82,13 +99,14 @@ module.exports = {
       countPublications = PublicationsRestrict.MAX;
     }
 
-    const [titles, sentences, categories] = await Promise.all([
+    const [titles, sentences, categories, comments] = await Promise.all([
       readContent(FilePath.TITLES),
       readContent(FilePath.SENTENCES),
-      readContent(FilePath.CATEGORIES)
+      readContent(FilePath.CATEGORIES),
+      readContent(FilePath.COMMENTS)
     ]);
 
-    const content = JSON.stringify(generatePublications(countPublications, titles, sentences, categories));
+    const content = JSON.stringify(generatePublications(countPublications, titles, sentences, categories, comments));
 
     try {
       await fs.writeFile(FILE_NAME, content);

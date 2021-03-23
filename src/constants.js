@@ -14,11 +14,15 @@ const HttpCode = {
   UNAUTHORIZED: 401
 };
 const ORANGE = `#ffa500`;
+const MAX_ID_LENGTH = 6;
+const ENCODING = `utf-8`;
 
 module.exports = {
   DEFAULT_COMMAND,
   USER_ARGV_INDEX,
   ORANGE,
+  MAX_ID_LENGTH,
+  ENCODING,
   ExitCode,
   HttpCode
 };
