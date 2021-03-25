@@ -1,6 +1,6 @@
 const express = require(`express`);
 const chalk = require(`chalk`);
-const mainRouter = require(`./routes/main`);
+const routes = require(`./api`);
 
 const DEFAULT_PORT = 3000;
 
@@ -10,7 +10,7 @@ module.exports = {
     const app = express();
     app.use(express.json());
 
-    app.use(`/`, mainRouter);
+    app.use(`api`, routes);
 
     const [customPort] = args;
     const port = Number.parseInt(customPort, 10) || DEFAULT_PORT;

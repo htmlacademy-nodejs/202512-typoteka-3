@@ -28,7 +28,6 @@ const PublicationsRestrict = {
   MIN: 1,
   MAX: 1000
 };
-
 /**
  * @param {string} filePath
  * @return {Promise<Array<string>>}
@@ -58,6 +57,13 @@ const getDate = () => {
   return publicationDate.toISOString();
 };
 
+/**
+ * Генерирует моки комментариев
+ * @typedef {{id: string, text: string}} Comment
+ * @param {number} count
+ * @param {Array<string>} comments
+ * @return {Array<Comment>}
+ */
 const generateComments = (count, comments) => (
   Array(count).fill(``).map(() => ({
     id: nanoid(MAX_ID_LENGTH),
@@ -65,16 +71,17 @@ const generateComments = (count, comments) => (
       .slice(0, getRandomInt(1, COMMENT_RESTRICT))
       .join(` `)
   }))
-)
+);
 
 /**
  * Генерирует моки публикаций
+ * @typedef {{ id: string, title: string, createdDate: string, announce: string, fullText: string, category: Array<string>, comments: Array<Comment> }} Article
  * @param {number} count
  * @param {Array<string>} titles
  * @param {Array<string>} sentences
  * @param {Array<string>} categories
  * @param {Array<string>} comments
- * @return {Array<{ title: string, createdDate: string, announce: string, fullText: string, category: Array<string> }>}
+ * @return {Array<Article>}
  */
 const generatePublications = (count, titles, sentences, categories, comments) => (
   Array(count).fill(``).map(() => ({
