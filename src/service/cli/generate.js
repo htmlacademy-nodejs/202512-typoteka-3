@@ -28,6 +28,12 @@ const PublicationsRestrict = {
   MIN: 1,
   MAX: 1000
 };
+
+/**
+ * @typedef {{ id: string, text: string }} Comment
+ * @typedef {{ id: string, title: string, createdDate: string, announce: string, fullText: string, category: Array<string>, comments: Array<Comment> }} Article
+ */
+
 /**
  * @param {string} filePath
  * @return {Promise<Array<string>>}
@@ -59,7 +65,6 @@ const getDate = () => {
 
 /**
  * Генерирует моки комментариев
- * @typedef {{id: string, text: string}} Comment
  * @param {number} count
  * @param {Array<string>} comments
  * @return {Array<Comment>}
@@ -75,7 +80,6 @@ const generateComments = (count, comments) => (
 
 /**
  * Генерирует моки публикаций
- * @typedef {{ id: string, title: string, createdDate: string, announce: string, fullText: string, category: Array<string>, comments: Array<Comment> }} Article
  * @param {number} count
  * @param {Array<string>} titles
  * @param {Array<string>} sentences
