@@ -12,7 +12,6 @@ Content-Type: application/json
 
 {
   "title": "Новая публикация Тест",
-  "description": "Тест тест тест",
   "announce": "Текст анонса",
   "fullText": "Полный текст",
   "category": ["Жизнь"]
@@ -27,7 +26,7 @@ Content-Type: application/json
 }
 ### Отредактировать статью
 
-DELETE http://localhost:3000/api/articles/59YknF
+DELETE http://localhost:3000/api/articles/9hvIXW
 Content-Type: application/json
 ### Удалить статью
 

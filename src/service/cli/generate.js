@@ -105,7 +105,7 @@ const generatePublications = (count, titles, sentences, categories, comments, au
       picture: shuffle(pictures)[getRandomInt(0, pictures.length - 1)],
       announce: shuffle(sentences).slice(0, getRandomInt(1, ANNOUNCE_RESTRICT)).join(` `),
       fullText: shuffle(sentences).slice(0, getRandomInt(0, sentences.length - 1)).join(` `),
-      categories: shuffle(categories).slice(0, getRandomInt(1, categories.length - 1)),
+      category: shuffle(categories).slice(0, getRandomInt(1, categories.length - 1)),
       comments: generateComments(getRandomInt(1, MAX_COMMENTS), comments, authors)
         .map((comment) => Object.assign({
           articleId: id,

@@ -2,9 +2,15 @@ const {Router} = require(`express`);
 const {
   HttpCode
 } = require(`../../../constants`);
-const articleValidator = require(`../../middlewares/article-validator`);
-const articleExist = require(`../../middlewares/article-exist`);
-const commentValidator = require(`../../middlewares/comment-validator`);
+const {
+  articleExist,
+  dataValidator
+} = require(`../../middlewares`);
+
+const RequiredFields = {
+  ARTICLE: [`title`, `announce`, `fullText`, `category`],
+  COMMENT: [`text`]
+}
 
 const articlesRouter = new Router();
 
@@ -28,7 +34,7 @@ module.exports = (app, articleService, commentService) => {
   });
 
   /** Создаёт новую публикацию */
-  articlesRouter.post(`/`, articleValidator, (req, res) => {
+  articlesRouter.post(`/`, dataValidator(RequiredFields.ARTICLE), (req, res) => {
     const newArticle = articleService.create(req.body);
     return res.status(HttpCode.CREATED).json(newArticle);
   });
@@ -44,7 +50,7 @@ module.exports = (app, articleService, commentService) => {
   articlesRouter.delete(`/:articleId`, articleExist(articleService), (req, res) => {
     const {articleId} = req.params;
     articleService.drop(articleId);
-    return res.status(HttpCode.SUCCESS).send(`Success`);
+    return res.status(HttpCode.SUCCESS);
   });
 
   /** Возвращает список комментариев определённой публикации */
@@ -54,7 +60,7 @@ module.exports = (app, articleService, commentService) => {
   });
 
   /** Добавляет новый комментарий определённой публикации */
-  articlesRouter.post(`/:articleId/comments/`, [articleExist(articleService), commentValidator], (req, res) => {
+  articlesRouter.post(`/:articleId/comments/`, [articleExist(articleService), dataValidator(RequiredFields.COMMENT)], (req, res) => {
     return res.status(HttpCode.CREATED).json(commentService.create(res.locals.article, req.body));
   });
 
@@ -62,6 +68,6 @@ module.exports = (app, articleService, commentService) => {
   articlesRouter.delete(`/:articleId/comments/:commentId`, articleExist(articleService), (req, res) => {
     const {commentId} = req.params;
     commentService.drop(res.locals.article, commentId);
-    return res.status(HttpCode.SUCCESS).send(`Success`);
+    return res.status(HttpCode.SUCCESS);
   });
 };

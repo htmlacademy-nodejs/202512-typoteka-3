@@ -12,6 +12,7 @@ const searchRouter = new Router();
 module.exports = (app, service) => {
   app.use(`/search`, searchRouter);
 
+  /** Возвращает статьи, title которых имеют вхождение query */
   searchRouter.get(`/`, (req, res) => {
     const {query} = req.query;
     const articles = service.findAll(query);
