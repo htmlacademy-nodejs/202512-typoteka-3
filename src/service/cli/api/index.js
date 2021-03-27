@@ -1,8 +1,23 @@
 const {Router} = require(`express`);
-const articlesRouter = require(`./articles`);
+const getMockData = require(`../../lib/get-mock-data`);
+const article = require(`./article`);
+const category = require(`./category`);
+const search = require(`./search`);
+const {
+  ArticleService,
+  CommentService,
+  CategoryService,
+  SearchService
+} = require(`../../data-service`);
 
-const router = new Router();
+const app = new Router();
 
-router.use(`/articles`, articlesRouter);
+(async () => {
+  const mockData = await getMockData();
 
-module.exports = router;
+  article(app, new ArticleService(mockData), new CommentService());
+  category(app, new CategoryService(mockData));
+  search(app, new SearchService(mockData));
+})();
+
+module.exports = app;

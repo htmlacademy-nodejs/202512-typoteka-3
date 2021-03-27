@@ -56,7 +56,7 @@ class ArticleService {
   /**
    * Удаляет статью
    * @param {string} id
-   * @return {(boolean)}
+   * @return {boolean}
    */
   drop(id) {
     const article = this._articles.find((it) => it.id === id);
@@ -66,47 +66,6 @@ class ArticleService {
     }
 
     this._articles = this._articles.filter((it) => it.id !== id);
-    return true;
-  }
-
-  /**
-   * Возвращает комментарии к статье
-   * @param {string} id
-   * @return {Array<Comment>}
-   */
-  findArticleComments(id) {
-    const article = this._articles.find((it) => it.id === id);
-    return article.comments;
-  }
-
-  /**
-   * Добавляет комментарий к статье
-   * @param {string} id
-   * @param {any} comment
-   * @return {boolean}
-   */
-  createComment(id, comment) {
-    const article = this._articles.find((it) => it.id === id);
-    const newComment = Object.assign({id: nanoid(MAX_ID_LENGTH)}, comment);
-    article.comments.push(newComment);
-    return newComment;
-  }
-
-  /**
-   * Удаляет комментарий к статье
-   * @param {string} id
-   * @param {string} commentId
-   * @return {boolean}
-   */
-  dropComment(id, commentId) {
-    const article = this._articles.find((it) => it.id === id);
-    const comment = article.comments.find((item) => item.id === commentId);
-
-    if (!comment) {
-      return false;
-    }
-
-    article.comments = article.comments.filter((item) => item.id !== commentId);
     return true;
   }
 }

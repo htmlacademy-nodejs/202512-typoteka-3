@@ -17,7 +17,9 @@ const FilePath = {
   TITLES: `./data/titles.txt`,
   SENTENCES: `./data/sentences.txt`,
   CATEGORIES: `./data/categories.txt`,
-  COMMENTS: `./data/comments.txt`
+  COMMENTS: `./data/comments.txt`,
+  AUTHORS: `./data/authors.txt`,
+  PICTURES: `./data/pictures.txt`,
 };
 
 const MAX_COMMENTS = 4;
@@ -30,8 +32,8 @@ const PublicationsRestrict = {
 };
 
 /**
- * @typedef {{ id: string, text: string }} Comment
- * @typedef {{ id: string, title: string, createdDate: string, announce: string, fullText: string, category: Array<string>, comments: Array<Comment> }} Article
+ * @typedef {{ id: string, author: string, text: string, createdDate: string, articleId: string, articleTitle: string }} Comment
+ * @typedef {{ id: string, title: string, createdDate: string, picture: string, announce: string, fullText: string, category: Array<string>, comments: Array<Comment> }} Article
  */
 
 /**
@@ -67,14 +69,16 @@ const getDate = () => {
  * Генерирует моки комментариев
  * @param {number} count
  * @param {Array<string>} comments
+ * @param {Array<string>} authors
  * @return {Array<Comment>}
  */
-const generateComments = (count, comments) => (
+const generateComments = (count, comments, authors) => (
   Array(count).fill(``).map(() => ({
     id: nanoid(MAX_ID_LENGTH),
     text: shuffle(comments)
       .slice(0, getRandomInt(1, COMMENT_RESTRICT))
-      .join(` `)
+      .join(` `),
+    author: shuffle(authors)[getRandomInt(0, authors.length - 1)],
   }))
 );
 
@@ -85,18 +89,30 @@ const generateComments = (count, comments) => (
  * @param {Array<string>} sentences
  * @param {Array<string>} categories
  * @param {Array<string>} comments
+ * @param {Array<string>} authors
+ * @param {Array<string>} pictures
  * @return {Array<Article>}
  */
-const generatePublications = (count, titles, sentences, categories, comments) => (
-  Array(count).fill(``).map(() => ({
-    id: nanoid(MAX_ID_LENGTH),
-    title: shuffle(titles)[getRandomInt(0, titles.length - 1)],
-    createdDate: getDate(),
-    announce: shuffle(sentences).slice(0, getRandomInt(1, ANNOUNCE_RESTRICT)).join(` `),
-    fullText: shuffle(sentences).slice(0, getRandomInt(0, sentences.length)).join(` `),
-    categories: shuffle(categories).slice(0, getRandomInt(1, categories.length)),
-    comments: generateComments(getRandomInt(1, MAX_COMMENTS), comments)
-  }))
+const generatePublications = (count, titles, sentences, categories, comments, authors, pictures) => (
+  Array(count).fill(``).map(() => {
+    const id = nanoid(MAX_ID_LENGTH);
+    const title = shuffle(titles)[getRandomInt(0, titles.length - 1)];
+
+    return {
+      id,
+      title,
+      createdDate: getDate(),
+      picture: shuffle(pictures)[getRandomInt(0, pictures.length - 1)],
+      announce: shuffle(sentences).slice(0, getRandomInt(1, ANNOUNCE_RESTRICT)).join(` `),
+      fullText: shuffle(sentences).slice(0, getRandomInt(0, sentences.length - 1)).join(` `),
+      categories: shuffle(categories).slice(0, getRandomInt(1, categories.length - 1)),
+      comments: generateComments(getRandomInt(1, MAX_COMMENTS), comments, authors)
+        .map((comment) => Object.assign({
+          articleId: id,
+          articleTitle: title
+        }, comment))
+    };
+  })
 );
 
 module.exports = {
@@ -110,14 +126,18 @@ module.exports = {
       countPublications = PublicationsRestrict.MAX;
     }
 
-    const [titles, sentences, categories, comments] = await Promise.all([
-      readContent(FilePath.TITLES),
-      readContent(FilePath.SENTENCES),
-      readContent(FilePath.CATEGORIES),
-      readContent(FilePath.COMMENTS)
-    ]);
+    const promisesRead = [
+      FilePath.TITLES,
+      FilePath.SENTENCES,
+      FilePath.CATEGORIES,
+      FilePath.COMMENTS,
+      FilePath.AUTHORS,
+      FilePath.PICTURES
+    ].map((path) => readContent(path));
 
-    const content = JSON.stringify(generatePublications(countPublications, titles, sentences, categories, comments));
+    const [titles, sentences, categories, comments, authors, pictures] = await Promise.all(promisesRead);
+
+    const content = JSON.stringify(generatePublications(countPublications, titles, sentences, categories, comments, authors, pictures));
 
     try {
       await fs.writeFile(FILE_NAME, content);

@@ -2,7 +2,7 @@ const {
   HttpCode
 } = require(`../../constants`);
 
-const commentKeys = [`text`];
+const commentKeys = [`text`, `author`];
 
 module.exports = (req, res, next) => {
   const newComment = req.body;

@@ -10,7 +10,7 @@ module.exports = {
     const app = express();
     app.use(express.json());
 
-    app.use(`api`, routes);
+    app.use(`/api`, routes);
 
     const [customPort] = args;
     const port = Number.parseInt(customPort, 10) || DEFAULT_PORT;
