@@ -4,4 +4,4 @@ const dataValidator = require(`./data-validator`);
 module.exports = {
   articleExist,
   dataValidator
-}
+};

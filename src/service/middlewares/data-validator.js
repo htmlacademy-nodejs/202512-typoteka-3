@@ -13,9 +13,9 @@ module.exports = (fields) => (req, res, next) => {
   const keysExist = fields.every((field) => keys.includes(field));
 
   if (!keysExist) {
-    res.status(HttpCode.BAD_REQUEST)
+    return res.status(HttpCode.BAD_REQUEST)
       .send(`Bad request`);
   }
 
-  next();
-}
+  return next();
+};

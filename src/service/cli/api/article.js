@@ -10,7 +10,7 @@ const {
 const RequiredFields = {
   ARTICLE: [`title`, `announce`, `fullText`, `category`],
   COMMENT: [`text`]
-}
+};
 
 const articlesRouter = new Router();
 
@@ -50,7 +50,7 @@ module.exports = (app, articleService, commentService) => {
   articlesRouter.delete(`/:articleId`, articleExist(articleService), (req, res) => {
     const {articleId} = req.params;
     articleService.drop(articleId);
-    return res.status(HttpCode.SUCCESS);
+    return res.status(HttpCode.SUCCESS).end();
   });
 
   /** Возвращает список комментариев определённой публикации */
@@ -68,6 +68,6 @@ module.exports = (app, articleService, commentService) => {
   articlesRouter.delete(`/:articleId/comments/:commentId`, articleExist(articleService), (req, res) => {
     const {commentId} = req.params;
     commentService.drop(res.locals.article, commentId);
-    return res.status(HttpCode.SUCCESS);
+    return res.status(HttpCode.SUCCESS).end();
   });
 };
