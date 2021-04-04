@@ -3,19 +3,24 @@ const {
   HttpCode
 } = require(`../../../constants`);
 
-const searchRouter = new Router();
-
 /**
  * @param {Router} app
  * @param {SearchService} service
  */
 module.exports = (app, service) => {
-  app.use(`/search`, searchRouter);
+  const route = new Router();
+  app.use(`/search`, route);
 
   /** Возвращает статьи, title которых имеют вхождение query */
-  searchRouter.get(`/`, (req, res) => {
+  route.get(`/`, (req, res) => {
     const {query} = req.query;
-    const articles = service.findAll(query);
-    return res.status(HttpCode.OK).json(articles);
+
+    if (query) {
+      const articles = service.findAll(query);
+      return res.status(HttpCode.OK).json(articles);
+    }
+
+    return res.status(HttpCode.BAD_REQUEST)
+      .send(`Bad request`);
   });
 };

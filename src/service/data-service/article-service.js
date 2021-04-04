@@ -5,7 +5,7 @@ const {
 
 class ArticleService {
   constructor(articles) {
-    this._articles = articles;
+    this._articles = articles.slice(0);
   }
 
   /**
