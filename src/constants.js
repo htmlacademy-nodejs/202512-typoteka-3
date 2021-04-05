@@ -15,9 +15,17 @@ const HttpCode = {
   NOT_FOUND: 404,
   INTERNAL_SERVER_ERROR: 500
 };
+
 const ORANGE = `#ffa500`;
+
 const MAX_ID_LENGTH = 6;
+
 const ENCODING = `utf-8`;
+
+const Env = {
+  DEVELOPMENT: `development`,
+  PRODUCTION: `production`
+};
 
 module.exports = {
   DEFAULT_COMMAND,
@@ -26,5 +34,6 @@ module.exports = {
   MAX_ID_LENGTH,
   ENCODING,
   ExitCode,
-  HttpCode
+  HttpCode,
+  Env
 };
