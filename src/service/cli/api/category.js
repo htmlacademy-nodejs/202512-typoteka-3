@@ -3,17 +3,16 @@ const {
   HttpCode
 } = require(`../../../constants`);
 
-const categoriesRouter = new Router();
-
 /**
  * @param {Router} app
  * @param {CategoryService} service
  */
 module.exports = (app, service) => {
-  app.use(`/categories`, categoriesRouter);
+  const route = new Router();
+  app.use(`/category`, route);
 
   /** Возвращает список доступных категорий */
-  categoriesRouter.get(`/`, (req, res) => {
+  route.get(`/`, (req, res) => {
     const categories = service.findAll();
     return res.status(HttpCode.OK).json(categories);
   });

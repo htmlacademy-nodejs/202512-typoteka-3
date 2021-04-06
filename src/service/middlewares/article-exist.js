@@ -5,7 +5,7 @@ const {
 /**
  * Проверяет существует ли статья
  * @param {ArticleService} service
- * @return {any};
+ * @return {any}
  */
 module.exports = (service) => (req, res, next) => {
   const {articleId} = req.params;
