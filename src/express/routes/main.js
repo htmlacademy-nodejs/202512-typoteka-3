@@ -1,50 +1,101 @@
 const {Router} = require(`express`);
-const mainRouter = new Router();
 
-const {
-  posts,
-  CATEGORIES,
-  comments,
-  LoginOptions,
-  RegistrationOptions,
-  results
-} = require(`../mocks`);
-
-mainRouter.get(`/`, (req, res) => res.render(`pages/main`, {
-  posts,
-  comments,
-  categories: CATEGORIES,
-  isUser: true
-})
-);
-
-mainRouter.get(`/register`, (req, res) => res.render(`pages/sign-up`,
+const RegistrationOptions = {
+  FIELDS: [
     {
-      isGuest: true,
-      fields: RegistrationOptions.FIELDS,
-      errors: RegistrationOptions.ERRORS
-    })
-);
-
-mainRouter.get(`/login`, (req, res) => res.render(`pages/login`,
+      type: `email`,
+      name: `email`,
+      placeholder: `Электронная почта`,
+      isRequired: true
+    },
     {
-      isGuest: true,
-      fields: LoginOptions.FIELDS
-    })
-);
-
-mainRouter.get(`/search`, (req, res) => res.render(`pages/search`,
+      type: `text`,
+      name: `name`,
+      placeholder: `Имя`,
+      isRequired: true
+    },
     {
-      isGuest: true,
-      results
-    })
-);
-
-mainRouter.get(`/categories`, (req, res) => res.render(`pages/all-categories`,
+      type: `text`,
+      name: `surname`,
+      placeholder: `Фамилия`,
+      isRequired: false
+    },
     {
-      categories: CATEGORIES,
-      isAdmin: true
-    })
-);
+      type: `password`,
+      name: `password`,
+      placeholder: `Пароль`,
+      isRequired: true
+    },
+    {
+      type: `password`,
+      name: `repeat-password`,
+      placeholder: `Повтор пароля`,
+      isRequired: true
+    }
+  ],
+  ERRORS: [
+    `Пароль не может состоять из двух букв`,
+    `Фамилия не должна быть смешной`
+  ]
+};
 
-module.exports = mainRouter;
+const LoginOptions = {
+  FIELDS: [
+    {
+      type: `email`,
+      name: `email`,
+      placeholder: `Электронная почта`,
+      isRequired: true
+    },
+    {
+      type: `password`,
+      name: `password`,
+      placeholder: `Пароль`,
+      isRequired: true
+    }
+  ]
+};
+
+/**
+ * @param {API} api
+ * @return {Router}
+ */
+module.exports = (api) => {
+  const router = new Router();
+
+  router.get(`/`, async (req, res) => {
+    const articles = await api.getArticles();
+    const categories = await api.getCategories();
+    const comments = [...articles.map((article) => article.comments)];
+
+    res.render(`pages/main`, {articles, comments, categories, isUser: true});
+  });
+
+  router.get(`/register`, (req, res) => res.render(`pages/sign-up`,
+      {
+        isGuest: true,
+        fields: RegistrationOptions.FIELDS,
+        errors: RegistrationOptions.ERRORS
+      })
+  );
+
+  router.get(`/login`, (req, res) => res.render(`pages/login`,
+      {
+        isGuest: true,
+        fields: LoginOptions.FIELDS
+      })
+  );
+
+  router.get(`/search`, async (req, res) => {
+    const {query} = req.query;
+    const results = await api.search(query);
+    res.render(`pages/search`, {isGuest: true, results});
+  });
+
+  router.get(`/categories`, async (req, res) => {
+    const categories = await api.getCategories();
+    res.render(`pages/all-categories`, {categories, isAdmin: true});
+  });
+
+  return router;
+};

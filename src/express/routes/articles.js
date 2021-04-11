@@ -1,41 +1,40 @@
 const {Router} = require(`express`);
-const articlesRouter = new Router();
-const {
-  posts,
-  comments,
-  CATEGORIES
-} = require(`../mocks`);
 
-articlesRouter.get(`/add`, (req, res) => res.render(`pages/new-post`,
-    {
-      isAdmin: true
-    })
-);
-articlesRouter.get(`/edit/:id`, (req, res) => res.render(`pages/new-post`,
-    {
-      isAdmin: true,
-      ...posts[0]
-    })
-);
+/**
+ * @param {API} api
+ * @return {Router}
+ */
+module.exports = module.exports = (api) => {
+  const router = new Router();
 
-articlesRouter.get(`/category/:id`, (req, res) => {
-  const currentCategory = CATEGORIES.find((category) => category.name === req.params[`id`]);
-  res.render(`pages/articles-by-category`,
+  router.get(`/add`, (req, res) => res.render(`pages/new-post`,
       {
-        isUser: true,
-        posts,
-        categories: CATEGORIES,
-        currentCategory
-      });
-}
-);
+        isAdmin: true
+      })
+  );
 
-articlesRouter.get(`/:id`, (req, res) => res.render(`pages/post`,
-    {
-      isUser: true,
-      categories: CATEGORIES,
-      comments
-    })
-);
+  router.get(`/edit/:id`, async (req, res) => {
+    const id = req.params[`id`];
+    const article = await api.getArticle(id);
 
-module.exports = articlesRouter;
+    res.render(`pages/new-post`, {isAdmin: true, article});
+  });
+
+  router.get(`/category/:id`, async (req, res) => {
+    const articles = await api.getArticles;
+    const categories = await api.getCategories();
+    const currentCategory = categories.find((category) => category.name === req.params[`id`]);
+
+    res.render(`pages/articles-by-category`, {isUser: true, articles, categories, currentCategory});
+  });
+
+  router.get(`/:id`, async (req, res) => {
+    const id = req.params[`id`];
+    const article = await api.getArticle(id);
+    const categories = await api.getCategories();
+
+    res.render(`pages/post`, {isUser: true, categories, comments: article.comments});
+  });
+
+  return router;
+};

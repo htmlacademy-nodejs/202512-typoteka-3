@@ -1,6 +1,7 @@
 const express = require(`express`);
 const path = require(`path`);
 const chalk = require(`chalk`);
+const api = require(`./api`).getAPI();
 
 const DEFAULT_PORT = 8080;
 const Dir = {
@@ -8,9 +9,9 @@ const Dir = {
   TEMPLATES: `templates`
 };
 
-const mainRoutes = require(`./routes/main`);
-const myRoutes = require(`./routes/my`);
-const articlesRoutes = require(`./routes/articles`);
+const mainRoutes = require(`./routes/main`)(api);
+const myRoutes = require(`./routes/my`)(api);
+const articlesRoutes = require(`./routes/articles`)(api);
 
 const app = express();
 

@@ -1,16 +1,22 @@
 const {Router} = require(`express`);
-const myRouter = new Router();
 
-myRouter.get(`/`, (req, res) => res.render(`pages/my`,
-    {
-      isAdmin: true
-    })
-);
+/**
+ * @param {API} api
+ * @return {Router}
+ */
+module.exports = (api) => {
+  const router = new Router();
 
-myRouter.get(`/comments`, (req, res) => res.render(`pages/comments`,
-    {
-      isAdmin: true
-    }
-));
+  router.get(`/`, async (req, res) => {
+    const articles = await api.getArticles();
+    res.render(`pages/my`, {isAdmin: true, articles});
+  });
 
-module.exports = myRouter;
+  router.get(`/comments`, async (req, res) => {
+    const articles = await api.getArticles();
+    const comments = [...articles.map((article) => article.comments)];
+    res.render(`pages/comments`, {isAdmin: true, articles, comments});
+  });
+
+  return router;
+};

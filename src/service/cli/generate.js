@@ -34,6 +34,7 @@ const PublicationsRestrict = {
 /**
  * @typedef {{ id: string, author: string, text: string, createdDate: string, articleId: string, articleTitle: string }} Comment
  * @typedef {{ id: string, title: string, createdDate: string, picture: string, announce: string, fullText: string, category: Array<string>, comments: Array<Comment> }} Article
+ * @typedef {{ id: string }} Category
  */
 
 /**
