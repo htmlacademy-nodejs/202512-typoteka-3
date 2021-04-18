@@ -16,14 +16,15 @@ module.exports = module.exports = (api) => {
   router.get(`/edit/:id`, async (req, res) => {
     const id = req.params[`id`];
     const article = await api.getArticle(id);
-
-    res.render(`pages/new-post`, {isAdmin: true, article});
+    if (article) {
+      return res.render(`pages/new-post`, {isAdmin: true, article});
+    }
+    return res.render(`pages/404`, {isGuest: true});
   });
 
   router.get(`/category/:id`, async (req, res) => {
-    const articles = await api.getArticles;
-    const categories = await api.getCategories();
-    const currentCategory = categories.find((category) => category.name === req.params[`id`]);
+    const [articles, categories] = await Promise.all([api.getArticles(), api.getCategories()])
+    const currentCategory = categories.find((category) => category.id === req.params[`id`]);
 
     res.render(`pages/articles-by-category`, {isUser: true, articles, categories, currentCategory});
   });
@@ -33,7 +34,7 @@ module.exports = module.exports = (api) => {
     const article = await api.getArticle(id);
     const categories = await api.getCategories();
 
-    res.render(`pages/post`, {isUser: true, categories, comments: article.comments});
+    res.render(`pages/post`, {isUser: true, categories, article, comments: article.comments});
   });
 
   return router;

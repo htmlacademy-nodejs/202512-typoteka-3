@@ -18,8 +18,14 @@ class API {
    * @private
    */
   async _load(url, options = {}) {
-    const response = await this._http.request({url, ...options});
-    return response.data;
+    let response;
+    try {
+      const response = await this._http.request( {url, ...options});
+      return response.data;
+    } catch (ex) {
+      // TODO: Обработка ошибок
+      console.log(ex);
+    }
   }
 
   /**

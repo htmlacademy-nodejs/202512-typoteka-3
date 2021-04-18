@@ -68,7 +68,7 @@ module.exports = (api) => {
     const categories = await api.getCategories();
     const comments = [...articles.map((article) => article.comments)];
 
-    res.render(`pages/main`, {articles, comments, categories, isUser: true});
+    res.render(`pages/main`, {articles, categories, comments, isUser: true});
   });
 
   router.get(`/register`, (req, res) => res.render(`pages/sign-up`,
@@ -87,8 +87,12 @@ module.exports = (api) => {
   );
 
   router.get(`/search`, async (req, res) => {
-    const {query} = req.query;
-    const results = await api.search(query);
+    const {search} = req.query;
+    let results = [];
+    if (search) {
+      results = await api.search(search);
+    }
+
     res.render(`pages/search`, {isGuest: true, results});
   });
 
