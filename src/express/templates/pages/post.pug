@@ -14,7 +14,7 @@ block content
           include ../components/categories
         if (article.picture)
           .post__picture
-            img(src=article.picture)
+            img(src='/img/' + article.picture)
         .post__text
           h3 Бирюзовое доверие
           #{article.fullText}

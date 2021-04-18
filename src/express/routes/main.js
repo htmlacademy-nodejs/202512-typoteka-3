@@ -64,9 +64,11 @@ module.exports = (api) => {
   const router = new Router();
 
   router.get(`/`, async (req, res) => {
-    const articles = await api.getArticles();
-    const categories = await api.getCategories();
-    const comments = [...articles.map((article) => article.comments)];
+    const [articles, categories] = await Promise.all([api.getArticles(), api.getCategories()])
+    const comments = articles.reduce((acc, article) => {
+      acc.push(...article.comments);
+      return acc;
+    }, []).slice(0, 3);
 
     res.render(`pages/main`, {articles, categories, comments, isUser: true});
   });

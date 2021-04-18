@@ -20,7 +20,7 @@ class API {
   async _load(url, options = {}) {
     let response;
     try {
-      const response = await this._http.request( {url, ...options});
+      response = await this._http.request( {url, ...options});
       return response.data;
     } catch (ex) {
       // TODO: Обработка ошибок

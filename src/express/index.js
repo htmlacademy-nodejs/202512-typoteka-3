@@ -6,6 +6,7 @@ const api = require(`./api`).getAPI();
 const DEFAULT_PORT = 8080;
 const Dir = {
   PUBLIC: `public`,
+  UPLOAD: `upload`,
   TEMPLATES: `templates`
 };
 
@@ -19,6 +20,7 @@ app.set(`views`, path.resolve(__dirname, Dir.TEMPLATES));
 app.set(`view engine`, `pug`);
 
 app.use(express.static(path.resolve(__dirname, Dir.PUBLIC)));
+app.use(express.static(path.resolve(__dirname, Dir.UPLOAD)));
 app.use(`/`, mainRoutes);
 app.use(`/articles`, articlesRoutes);
 app.use(`/my`, myRoutes);
