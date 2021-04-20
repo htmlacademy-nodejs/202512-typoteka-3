@@ -1,15 +1,15 @@
 li.preview__item
   ul.preview__breadcrumbs(style="flex-wrap: wrap")
-    each category in post.categories
+    each category in article.category
       li.preview__breadcrumbs-item
-        a.preview__breadcrumbs-link(href='#') #{category}
+        a.preview__breadcrumbs-link(href='#') #{category.name}
   .preview__background
-    if (post.image && post.image.src)
-      img.preview__background-image(src=post.image.src width='460' height='240' srcset=post.image.src alt=post.image.title)
-  time.preview__time(datetime=post.createdDate) #{post.dateDisplay}
+    if (article.image && article.image.src)
+      img.preview__background-image(src=article.image.src width='460' height='240' srcset=article.image.src alt=article.image.title)
+  time.preview__time(datetime=article.createdDate) #{article.dateDisplay}
   h3.preview__name
-    a.preview__name-link(href='#') #{post.title}
-  p.preview__text #{post.announce}
+    a.preview__name-link(href='#') #{article.title}
+  p.preview__text #{article.announce}
   a.preview__comment(href='#')
     | Комментарии
     span.preview__cloud

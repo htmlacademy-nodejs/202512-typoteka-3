@@ -6,9 +6,9 @@ section.last.main-page__last
     ul.last__list
       each comment in comments
         li.last__list-item
-          img.last__list-image(src=comment.avatar width='20' height='20' alt='Аватар пользователя')
+          img.last__list-image(src='/img/' + comment.avatar width='20' height='20')
           b.last__list-name #{comment.author}
-          a.last__list-link(href='#') #{comment.message}
+          a.last__list-link(href='#') #{comment.text}
   else
     p.last__empty Здесь пока ничего нет...
 

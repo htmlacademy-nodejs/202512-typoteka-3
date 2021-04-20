@@ -34,6 +34,7 @@ const PublicationsRestrict = {
 /**
  * @typedef {{ id: string, author: string, text: string, createdDate: string, articleId: string, articleTitle: string }} Comment
  * @typedef {{ id: string, title: string, createdDate: string, picture: string, announce: string, fullText: string, category: Array<string>, comments: Array<Comment> }} Article
+ * @typedef {{ id: string, name: string }} Category
  */
 
 /**
@@ -73,6 +74,7 @@ const getDate = () => {
  * @return {Array<Comment>}
  */
 const generateComments = (count, comments, authors) => (
+  // TODO: Дата создания комментария
   Array(count).fill(``).map(() => ({
     id: nanoid(MAX_ID_LENGTH),
     text: shuffle(comments)
@@ -83,11 +85,28 @@ const generateComments = (count, comments, authors) => (
 );
 
 /**
+ *
+ * @param {Array<string>} categories
+ * @return {Array<Category>}
+ */
+const prepareCategories = (categories) => {
+  return categories.reduce((acc, category) => {
+    if (category) {
+      acc.push({
+        id: nanoid(MAX_ID_LENGTH),
+        name: category
+      })
+    }
+    return acc;
+  }, []);
+}
+
+/**
  * Генерирует моки публикаций
  * @param {number} count
  * @param {Array<string>} titles
  * @param {Array<string>} sentences
- * @param {Array<string>} categories
+ * @param {Array<Category>} categories
  * @param {Array<string>} comments
  * @param {Array<string>} authors
  * @param {Array<string>} pictures
@@ -105,7 +124,7 @@ const generatePublications = (count, titles, sentences, categories, comments, au
       picture: shuffle(pictures)[getRandomInt(0, pictures.length - 1)],
       announce: shuffle(sentences).slice(0, getRandomInt(1, ANNOUNCE_RESTRICT)).join(` `),
       fullText: shuffle(sentences).slice(0, getRandomInt(0, sentences.length - 1)).join(` `),
-      category: shuffle(categories).slice(0, getRandomInt(1, categories.length - 1)),
+      category:  shuffle(categories).slice(0, getRandomInt(1, categories.length - 1)),
       comments: generateComments(getRandomInt(1, MAX_COMMENTS), comments, authors)
         .map((comment) => Object.assign({
           articleId: id,
@@ -137,7 +156,7 @@ module.exports = {
 
     const [titles, sentences, categories, comments, authors, pictures] = await Promise.all(promisesRead);
 
-    const content = JSON.stringify(generatePublications(countPublications, titles, sentences, categories, comments, authors, pictures));
+    const content = JSON.stringify(generatePublications(countPublications, titles, sentences, prepareCategories(categories), comments, authors, pictures));
 
     try {
       await fs.writeFile(FILE_NAME, content);

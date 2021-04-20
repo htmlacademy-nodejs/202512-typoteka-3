@@ -3,9 +3,9 @@ block variables
   - var mainClass = 'articles-category';
 
 block content
-    h1 #{currentCategory.displayName}
+    h1 #{currentCategory.name}
 
-    if(posts.length)
+    if(articles.length)
       section.articles-category__theme-list
         h2.visually-hidden Список тем
         include ../components/categories
