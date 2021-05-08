@@ -9,7 +9,6 @@ class SearchService {
    * @return {Array<Article>}
    */
   findAll(query) {
-    console.log(query);
     return this._articles.filter((article) => article.title.includes(query));
   }
 }

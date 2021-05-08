@@ -9,8 +9,9 @@
     "eslint": "eslint --ext .js src/",
     "start": "cross-env NODE_ENV=production node ./src/service/service.js --server",
     "start::debug": "cross-env NODE_ENV=development node ./src/service/service.js --server",
+    "start-front-server": "nodemon ./src/express/index.js",
     "server": "nodemon ./src/service/service.js --server",
-    "start-front-server": "nodemon ./src/express/index.js"
+    "start-app": "concurrently \"npm run server\" \"npm run start-front-server\""
   },
   "repository": {
     "type": "git",
@@ -23,6 +24,7 @@
   },
   "homepage": "https://github.com/pannat/202512-typoteka-3#readme",
   "devDependencies": {
+    "concurrently": "6.1.0",
     "eslint": "7.21.0",
     "eslint-config-htmlacademy": "0.6.0",
     "jest": "26.6.3",
