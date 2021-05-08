@@ -1,3 +1,9 @@
+DROP TABLE IF EXISTS users CASCADE;
+DROP TABLE IF EXISTS articles CASCADE;
+DROP TABLE IF EXISTS categories CASCADE;
+DROP TABLE IF EXISTS article_categories CASCADE;
+DROP TABLE IF EXISTS comments CASCADE;
+
 CREATE TABLE users(
       id integer PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
       first_name varchar(255) NOT NULL,
@@ -11,7 +17,7 @@ CREATE TABLE articles(
     id integer PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
     title varchar(255) NOT NULL,
     picture varchar(50) NOT NULL,
-    announce varchar(255) NOT NULL,
+    announce text NOT NULL,
     full_text text NOT NULL,
     created_at timestamp DEFAULT current_timestamp,
     user_id integer NOT NULL,
@@ -21,7 +27,7 @@ CREATE TABLE articles(
 
 CREATE TABLE categories(
     id integer PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
-    title varchar(255) NOT NULL
+    title varchar(255) NOT NULL UNIQUE
 );
 
 CREATE TABLE article_categories(

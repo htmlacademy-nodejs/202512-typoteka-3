@@ -21,18 +21,18 @@ module.exports = module.exports = (api) => {
       const extension = file.originalname.split(`.`).pop();
       cb(null, `${uniqueName}.${extension}`);
     }
-  })
+  });
 
   const upload = multer({storage});
 
   router.get(`/add`, async (req, res) => {
     const categories = await api.getCategories();
     res.render(`pages/new-post`,
-      {
-        categories,
-        isAdmin: true
-      })
-    }
+        {
+          categories,
+          isAdmin: true
+        });
+  }
   );
 
   router.post(`/add`, upload.single(`upload`), async (req, res) => {
@@ -45,7 +45,7 @@ module.exports = module.exports = (api) => {
       category: categories.filter((category) => body.category.includes(category.id)),
       announce: body.announce,
       fullText: body.fullText
-    }
+    };
 
     try {
       await api.createArticle(articleData);
@@ -66,7 +66,7 @@ module.exports = module.exports = (api) => {
   });
 
   router.get(`/category/:id`, async (req, res) => {
-    const [articles, categories] = await Promise.all([api.getArticles(), api.getCategories()])
+    const [articles, categories] = await Promise.all([api.getArticles(), api.getCategories()]);
     const currentCategory = categories.find((category) => category.id === req.params[`id`]);
 
     res.render(`pages/articles-by-category`, {isUser: true, articles, categories, currentCategory});
