@@ -1,8 +1,8 @@
 const DEFAULT_COMMAND = `--help`;
 const USER_ARGV_INDEX = 2;
 const ExitCode = {
-  success: 0,
-  exception: 1
+  SUCCESS: 0,
+  EXCEPTION: 1
 };
 
 const HttpCode = {

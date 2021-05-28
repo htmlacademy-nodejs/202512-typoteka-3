@@ -1,5 +1,6 @@
 const express = require(`express`);
 const routes = require(`./api`);
+const sequelize = require(`../lib/sequelize`);
 const {getLogger} = require(`../lib/logger`);
 const {
   HttpCode,
@@ -12,7 +13,17 @@ const logger = getLogger({name: `api`});
 
 module.exports = {
   name: `--server`,
-  run(args) {
+  async run(args) {
+    try {
+      logger.info(`Trying to connect to database...`);
+      await sequelize.authenticate();
+    } catch (ex) {
+      logger.error(`An error occured: ${ex.message}`);
+      process.exit(ExitCode.EXCEPTION);
+    }
+
+    logger.info(`Connection to database established`);
+
     const app = express();
     app.use(express.json());
 
@@ -53,7 +64,7 @@ module.exports = {
     } catch (ex) {
       // Ошибки при запуске сервера (уровень «error»)
       logger.error(`An error occured: ${ex.message}`);
-      process.exit(ExitCode.exception);
+      process.exit(ExitCode.EXCEPTION);
     }
   }
 };

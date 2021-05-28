@@ -154,7 +154,7 @@ module.exports = {
 
     const preparedCategories = prepareCategories(categories);
 
-    const articles = generatePublications(countPublications, titles, sentences, preparedCategories, commentSentences, users, pictures);
+    const articles = generatePublications(countPublications, titles, sentences, preparedCategories, commentSentences, pictures);
 
     const comments = articles.flatMap((article) => article.comments);
     const articleCategory = articles.reduce((acc, article, index) => {
@@ -187,7 +187,7 @@ module.exports = {
       ${articleCategoryValues};
       ALTER TABLE article_categories ENABLE TRIGGER ALL;
       ALTER TABLE comments DISABLE TRIGGER ALL;
-      INSERT INTO COMMENTS(article_id, created_at, text) VALUES
+      INSERT INTO comments(article_id, created_at, text) VALUES
       ${commentValues};
       ALTER TABLE comments ENABLE TRIGGER ALL;
     `;
@@ -195,10 +195,10 @@ module.exports = {
     try {
       await fs.writeFile(FILE_NAME, content);
       console.info(chalk.green(`Operation success. File created`));
-      process.exit(ExitCode.success);
+      process.exit(ExitCode.SUCCESS);
     } catch (ex) {
       console.error(chalk.red(`Can't write data to file : ${ex}`));
-      process.exit(ExitCode.exception);
+      process.exit(ExitCode.EXCEPTION);
     }
   }
 };
