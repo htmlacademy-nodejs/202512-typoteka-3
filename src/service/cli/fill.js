@@ -4,7 +4,16 @@ const {
   getRandomInt,
   shuffle
 } = require(`../../utils`);
+const {
+  ExitCode,
+  ORANGE,
+  ENCODING
+} = require(`../../constants`);
 
+const COMMENT_RESTRICT = 3;
+const ANNOUNCE_RESTRICT = 5;
+const ARTICLE_COUNT = 3;
+const COMMENT_COUNT = ARTICLE_COUNT * 2;
 const FILE_NAME = `fill-db.sql`;
 const FilePath = {
   TITLES: `./data/titles.txt`,
@@ -14,17 +23,6 @@ const FilePath = {
   AUTHORS: `./data/authors.txt`,
   PICTURES: `./data/pictures.txt`,
 };
-
-const COMMENT_RESTRICT = 3;
-const ANNOUNCE_RESTRICT = 5;
-const ARTICLE_COUNT = 3;
-const COMMENT_COUNT = ARTICLE_COUNT * 2;
-
-const {
-  ExitCode,
-  ORANGE,
-  ENCODING
-} = require(`../../constants`);
 
 const PublicationsRestrict = {
   MIN: 1,
@@ -55,7 +53,7 @@ const users = [
 const readContent = async (filePath) => {
   try {
     const content = await fs.readFile(filePath, ENCODING);
-    return content.split(`\n`);
+    return content.split(`\n`).filter((item) => item !== ``);
   } catch (ex) {
     console.log(chalk.red(ex));
     return [];
@@ -78,15 +76,14 @@ const getDate = () => {
 };
 
 const generateComments = (comments) => {
-  return (
-    Array(COMMENT_COUNT).fill(``).map(() => ({
-      articleId: getRandomInt(1, ARTICLE_COUNT),
-      text: shuffle(comments)
-        .slice(0, getRandomInt(1, COMMENT_RESTRICT))
-        .join(` `),
-      createdDate: getDate()
-    }))
-  );
+  return Array(COMMENT_COUNT).fill(``).map(() => ({
+    userId: getRandomInt(1, users.length),
+    articleId: getRandomInt(1, ARTICLE_COUNT),
+    text: shuffle(comments)
+      .slice(0, getRandomInt(1, COMMENT_RESTRICT))
+      .join(` `),
+    createdDate: getDate()
+  }));
 };
 
 /**
@@ -95,15 +92,10 @@ const generateComments = (comments) => {
  * @return {Array<Category>}
  */
 const prepareCategories = (categories) => {
-  return categories.reduce((acc, category, index) => {
-    if (category) {
-      acc.push({
-        id: index + 1,
-        name: category
-      });
-    }
-    return acc;
-  }, []);
+  return categories.map((category, index) => ({
+    id: index + 1,
+    name: category
+  }));
 };
 
 /**
@@ -169,8 +161,8 @@ module.exports = {
     const categoryValues = preparedCategories.map((category) => `('${category.name}')`).join(`,\n`);
     const articleValues = articles.map(({title, announce, fullText, picture, createdDate, userId}) =>
       `('${title}', '${picture}', '${announce}', '${fullText}', '${createdDate}', '${userId}')`).join(`,\n`);
-    const articleCategoryValues = articleCategory.map(({articleId, categoryId}) => `(${articleId}, '${categoryId}')`).join(`,\n`);
-    const commentValues = comments.map(({articleId, text, createdDate}) => `(${articleId}, '${createdDate}', '${text}')`).join(`,\n`);
+    const articleCategoryValues = articleCategory.map(({articleId, categoryId}) => `(${articleId}, ${categoryId})`).join(`,\n`);
+    const commentValues = comments.map(({articleId, userId, text, createdDate}) => `(${articleId}, ${userId}, '${createdDate}', '${text}')`).join(`,\n`);
 
     const content = `
       TRUNCATE users, categories, articles, article_categories, comments RESTART IDENTITY;
@@ -187,7 +179,7 @@ module.exports = {
       ${articleCategoryValues};
       ALTER TABLE article_categories ENABLE TRIGGER ALL;
       ALTER TABLE comments DISABLE TRIGGER ALL;
-      INSERT INTO comments(article_id, created_at, text) VALUES
+      INSERT INTO comments(article_id, user_id, created_at, text) VALUES
       ${commentValues};
       ALTER TABLE comments ENABLE TRIGGER ALL;
     `;

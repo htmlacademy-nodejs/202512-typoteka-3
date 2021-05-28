@@ -42,6 +42,7 @@ CREATE TABLE article_categories(
 CREATE TABLE comments(
     id integer PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
     article_id integer NOT NULL,
+    user_id integer NOT NULL,
     created_at timestamp DEFAULT current_timestamp,
     text text NOT NULL,
     FOREIGN KEY (article_id) REFERENCES articles(id)
