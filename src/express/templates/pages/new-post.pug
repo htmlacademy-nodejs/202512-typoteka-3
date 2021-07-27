@@ -22,7 +22,7 @@ block content
                   input(type='text' name='title' placeholder='Заголовок' required='' value=(article ? article.title : ''))
               .form__field.form__field--post-image
                 label
-                  input#image-name-field(type='text' name='photo' placeholder='Фотография' readonly='')
+                  input#image-name-field(type='text' name='photo' placeholder='Фотография' readonly='' value=(article ? article.picture : ''))
                 .form__image-loader.form__image-loader--publication
                   label
                     input.visually-hidden(type='file' name='upload')
@@ -32,7 +32,7 @@ block content
                 each category in categories
                   .new-publication__checkbox.new-publication__checkbox--auto
                     input(id=category.id type='checkbox' name='category[]' value=category.id)
-                    label(for=category.id) #{category.name}
+                    label(for=category.id) #{category.title}
             .form__wrapper.form__wrapper--text
               .form__field.form__field--publication-text
                 label

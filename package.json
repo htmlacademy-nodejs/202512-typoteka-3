@@ -11,7 +11,7 @@
     "start::debug": "cross-env node -r dotenv/config ./src/service/service.js --server",
     "start-front-server": "nodemon ./src/express/index.js",
     "server": "nodemon -r dotenv/config ./src/service/service.js --server",
-    "fill-db": "cross-env node -r dotenv/config ./src/service/service.js --fill",
+    "fill-db": "cross-env node -r dotenv/config ./src/service/service.js --filldb",
     "start-app": "concurrently \"npm run server\" \"npm run start-front-server\""
   },
   "repository": {

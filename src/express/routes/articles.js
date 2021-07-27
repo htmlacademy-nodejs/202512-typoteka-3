@@ -1,83 +1,80 @@
 const {Router} = require(`express`);
-const {nanoid} = require(`nanoid`);
-const multer = require(`multer`);
-const path = require(`path`);
-
-const UPLOAD_DIR = `../upload/img/`;
-const uploadDirAbsolute = path.resolve(__dirname, UPLOAD_DIR);
-const MAX_SYMBOLS_FILENAME = 10;
-
 /**
- * @param {API} api
+ * @param {ArticleService} articleService
+ * @param {CategoryService} categoryService
+ * @param {FileStorageService} fileStorageService
  * @return {Router}
  */
-module.exports = module.exports = (api) => {
+module.exports = (articleService, categoryService, fileStorageService) => {
   const router = new Router();
 
-  const storage = multer.diskStorage({
-    destination: uploadDirAbsolute,
-    filename: (req, file, cb) => {
-      const uniqueName = nanoid(MAX_SYMBOLS_FILENAME);
-      const extension = file.originalname.split(`.`).pop();
-      cb(null, `${uniqueName}.${extension}`);
-    }
+  router.get(`/add`, async (req, res) => {
+    const categories = await categoryService.getAll(false);
+
+    res.render(`pages/new-post`, {categories, isAdmin: true});
   });
 
-  const upload = multer({storage});
-
-  router.get(`/add`, async (req, res) => {
-    const categories = await api.getCategories();
-    res.render(`pages/new-post`,
-        {
-          categories,
-          isAdmin: true
-        });
-  }
-  );
-
-  router.post(`/add`, upload.single(`upload`), async (req, res) => {
-    const {body, file} = req;
-    const categories = await api.getCategories();
-
-    const articleData = {
-      picture: file.filename,
-      title: body.title,
-      category: categories.filter((category) => body.category.includes(category.id)),
-      announce: body.announce,
-      fullText: body.fullText
-    };
-
+  router.post(`/add`, fileStorageService.getSingleUploadFn(), async (req, res) => {
     try {
-      await api.createArticle(articleData);
-      res.redirect(`/my`);
+      const articleData = articleService.getArticleData(req);
+      await articleService.createOne(articleData);
+      return res.redirect(`/my`);
     } catch (ex) {
-      res.redirect(`back`);
+      return res.redirect(`back`);
     }
   });
 
   router.get(`/edit/:id`, async (req, res) => {
     const id = req.params[`id`];
     try {
-      const article = await api.getArticle(id);
-      return res.render(`pages/new-post`, {isAdmin: true, article});
+      const article = await articleService.getOne(id);
+      const categories = await categoryService.getAll(false);
+      return res.render(`pages/new-post`, {isAdmin: true, article, categories});
     } catch (ex) {
       return res.render(`pages/404`, {isGuest: true});
     }
   });
 
-  router.get(`/category/:id`, async (req, res) => {
-    const [articles, categories] = await Promise.all([api.getArticles(), api.getCategories()]);
-    const currentCategory = categories.find((category) => category.id === req.params[`id`]);
+  router.post(`/edit/:id`, fileStorageService.getSingleUploadFn(), async (req, res) => {
+    const id = req.params[`id`];
+    try {
+      const articleData = articleService.getArticleData(req);
+      await articleService.changeOne(id, articleData);
+      return res.redirect(`/my`);
+    } catch (ex) {
+      return res.redirect(`back`);
+    }
+  });
 
-    res.render(`pages/articles-by-category`, {isUser: true, articles, categories, currentCategory});
+  router.get(`/category/:id`, async (req, res) => {
+    const currentCategoryId = Number.parseInt(req.params[`id`], 10);
+
+    try {
+      if (isNaN(currentCategoryId)) {
+        throw new Error(`Category id should be number`);
+      }
+
+      const categories = await categoryService.getAll(true);
+      const currentCategory = categories.find((category) => category.id === currentCategoryId);
+
+      if (currentCategory === undefined) {
+        throw new Error(`Category not found`);
+      }
+
+      const articles = await articleService.getAll({comments: false});
+      return res.render(`pages/articles-by-category`, {isUser: true, articles, categories, currentCategory});
+    } catch (ex) {
+      return res.render(`pages/404`, {isGuest: true});
+    }
   });
 
   router.get(`/:id`, async (req, res) => {
     const id = req.params[`id`];
 
     try {
-      const [article, categories] = await Promise.all([api.getArticle(id), api.getCategories()]);
-      return res.render(`pages/post`, {isUser: true, categories, article, comments: article.comments});
+      const [article, categories] = await Promise.all([articleService.getOne(id), categoryService.getAll(false)]);
+
+      return res.render(`pages/post`, {isUser: true, categories, article});
     } catch (ex) {
       return res.render(`pages/404`, {isGuest: true});
     }

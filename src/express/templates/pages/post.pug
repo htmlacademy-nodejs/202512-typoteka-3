@@ -16,14 +16,14 @@ block content
           .post__picture
             img(src='/img/' + article.picture)
         .post__text
-          h3 Бирюзовое доверие
-          #{article.fullText}
+          h3=article.title
+          | #{article.fullText}
     .post__wrapper.post__wrapper--comments
       section.post__comments.comments
-        h2.comments__title.title.title--middle #{comments.length ? 'Комментарии' : 'Комментарии отсутствуют'}
-        if (comments.length)
+        h2.comments__title.title.title--middle #{article.comments.length ? 'Комментарии' : 'Комментарии отсутствуют'}
+        if (article.comments.length)
           ul.comments__list
-            each comment in comments
+            each comment in article.comments
               li.comments__comment
                 .comments__avatar.avatar
                   img(src=comment.avatar alt='аватар пользователя')

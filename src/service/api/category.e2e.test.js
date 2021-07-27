@@ -1,12 +1,12 @@
 const express = require(`express`);
 const request = require(`supertest`);
 
-const category = require(`./category`);
-const DataService = require(`../../data-service/category-service`);
+const category = require(`src/service/api/category`);
+const DataService = require(`src/service/data-service/category-service`);
 
 const {
   HttpCode
-} = require(`../../../constants`);
+} = require(`src/constants`);
 
 const mockData = [
   {

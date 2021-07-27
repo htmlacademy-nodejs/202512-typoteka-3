@@ -1,12 +1,11 @@
 li.preview__item
   ul.preview__breadcrumbs(style="flex-wrap: wrap")
-    each category in article.category
+    each category in article.categories
       li.preview__breadcrumbs-item
-        a.preview__breadcrumbs-link(href='#') #{category.name}
+        a.preview__breadcrumbs-link(href='#') #{category.title}
   .preview__background
-    if (article.image && article.image.src)
-      img.preview__background-image(src=article.image.src width='460' height='240' srcset=article.image.src alt=article.image.title)
-  time.preview__time(datetime=article.createdDate) #{article.dateDisplay}
+    img.preview__background-image(src=article.picture width='460' height='240' alt=article.title)
+  time.preview__time(datetime=article.createdDate) #{article.createdAt}
   h3.preview__name
     a.preview__name-link(href='#') #{article.title}
   p.preview__text #{article.announce}

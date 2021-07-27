@@ -1,19 +1,28 @@
-const {nanoid} = require(`nanoid`);
-const {
-  MAX_ID_LENGTH
-} = require(`../../constants`);
+const Alias = require(`../models/alias`);
+
+/**
+ * @typedef {*} Article
+ */
 
 class ArticleService {
-  constructor(articles) {
-    this._articles = articles.slice(0);
+  constructor(sequelize) {
+    this._Article = sequelize.models.Article;
+    this._Comment = sequelize.models.Comment;
+    this._Category = sequelize.models.Category;
   }
 
   /**
    * Возвращает все статьи
+   * @param {boolean} needComments
    * @return {Array<Article>}
    */
-  findAll() {
-    return this._articles;
+  async findAll(needComments = false) {
+    const include = [Alias.CATEGORIES];
+    if (needComments) {
+      include.push(Alias.COMMENTS);
+    }
+    const articles = await this._Article.findAll({include});
+    return articles.map((item) => item.get());
   }
 
   /**
@@ -21,36 +30,33 @@ class ArticleService {
    * @param {string} id
    * @return {Article}
    */
-  findOne(id) {
-    return this._articles.find((article) => article.id === id);
+  async findOne(id) {
+    const article = await this._Article.findByPk(id, {include: [Alias.CATEGORIES, Alias.COMMENTS]});
+    return article.get();
   }
 
   /**
    * Добавляет новую статью
-   * @param {any} article
+   * @param {Partial<Article>} data
    * @return {Article}
    */
-  create(article) {
-    const newArticle = Object.assign({
-      id: nanoid(MAX_ID_LENGTH),
-      createdDate: new Date().toISOString(),
-      comments: []
-    }, article);
-
-    this._articles.push(newArticle);
-    return newArticle;
+  async create(data) {
+    const article = await this._Article.create(data);
+    await article.addCategories(data.categories);
+    return article.get();
   }
 
   /**
    * Редактирует статью
    * @param {string} id
-   * @param {Article} article
+   * @param {Partial<Article>} data
    * @return {Article}
    */
-  update(id, article) {
-    const oldArticle = this._articles.find((it) => it.id === id);
-
-    return Object.assign(oldArticle, article);
+  async update(id, data) {
+    const [affectedRows] = await this._Article.update(data, {
+      where: {id}
+    });
+    return !!affectedRows;
   }
 
   /**
@@ -58,15 +64,12 @@ class ArticleService {
    * @param {string} id
    * @return {boolean}
    */
-  drop(id) {
-    const article = this._articles.find((it) => it.id === id);
+  async drop(id) {
+    const deletedRows = await this._Article.destroy({
+      where: {id}
+    });
 
-    if (!article) {
-      return false;
-    }
-
-    this._articles = this._articles.filter((it) => it.id !== id);
-    return true;
+    return !!deletedRows;
   }
 }
 

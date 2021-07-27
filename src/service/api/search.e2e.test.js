@@ -1,12 +1,12 @@
 const express = require(`express`);
 const request = require(`supertest`);
 
-const search = require(`./search`);
-const DataService = require(`../../data-service/search-service`);
+const search = require(`src/service/api/search`);
+const DataService = require(`src/service/data-service/search-service`);
 
 const {
   HttpCode
-} = require(`../../../constants`);
+} = require(`src/constants`);
 
 const mockData = [
   {

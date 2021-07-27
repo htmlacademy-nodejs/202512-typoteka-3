@@ -7,9 +7,9 @@ const {
  * @param {ArticleService} service
  * @return {any}
  */
-module.exports = (service) => (req, res, next) => {
+module.exports = (service) => async (req, res, next) => {
   const {articleId} = req.params;
-  const article = service.findOne(articleId);
+  const article = await service.findOne(articleId);
 
   if (!article) {
     return res.status(HttpCode.NOT_FOUND)
