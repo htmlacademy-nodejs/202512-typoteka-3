@@ -129,7 +129,6 @@ module.exports = {
     const [titles, sentences, categories, comments, pictures] = await Promise.all(promisesRead);
 
     const articles = generatePublications(countPublications, titles, sentences, comments, pictures, categories);
-
     return initDatabase(sequelize, articles, categories);
   }
 };

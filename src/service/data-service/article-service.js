@@ -28,11 +28,11 @@ class ArticleService {
   /**
    * Возвращает статью
    * @param {string} id
-   * @return {Article}
+   * @return {Article | null}
    */
   async findOne(id) {
     const article = await this._Article.findByPk(id, {include: [Alias.CATEGORIES, Alias.COMMENTS]});
-    return article.get();
+    return article ? article.get() : null;
   }
 
   /**

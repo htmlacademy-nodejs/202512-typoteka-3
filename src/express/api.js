@@ -53,15 +53,6 @@ class API {
       return ex;
     }
   }
-
-  /**
-   * Получает и возвращает статьи, имеющие вхождение подстроки query
-   * @param {string} query
-   * @return {Promise<Article>}
-   */
-  async search(query) {
-    return this._load(`/search`, {params: {query}});
-  }
 }
 
 const port = process.env.API_PORT || 3000;
