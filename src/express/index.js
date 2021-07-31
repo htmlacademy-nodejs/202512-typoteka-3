@@ -6,9 +6,11 @@ const getMainRoutes = require(`./routes/main`);
 const getMyRoutes = require(`./routes/my`);
 const getArticleRoutes = require(`./routes/articles`);
 
-const ArticleService = require(`./data-services/article-service`);
-const CategoryService = require(`./data-services/category-service`);
-const FileStorageService = require(`./data-services/file-storage-service`);
+const {
+  ArticleService,
+  CategoryService,
+  FileStorageService
+} = require(`./data-service/index`);
 
 const DEFAULT_PORT = 8080;
 const Dir = {

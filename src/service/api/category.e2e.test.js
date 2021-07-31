@@ -3,7 +3,7 @@ const request = require(`supertest`);
 const Sequelize = require(`sequelize`);
 
 const category = require(`./category`);
-const DataService = require(`../data-service/category-service`);
+const {CategoryService} = require(`../data-service/index`);
 const initDB = require(`../lib/init-db`);
 const {
   mockArticles,
@@ -21,7 +21,7 @@ const mockDB = new Sequelize(`sqlite::memory:`, {logging: false});
 
 beforeAll(async() => {
   await initDB(mockDB, mockArticles, mockCategories);
-  category(app, new DataService(mockDB));
+  category(app, new CategoryService(mockDB));
 })
 
 describe(`API returns category list`, () => {

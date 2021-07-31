@@ -3,8 +3,10 @@ const request = require(`supertest`);
 const Sequelize = require(`sequelize`);
 
 const article = require(`./article`);
-const ArticleService = require(`../data-service/article-service`);
-const CommentService = require(`../data-service/comment-service`);
+const {
+  ArticleService,
+  CommentService
+} = require(`../data-service/index`);
 const initDB = require(`../lib/init-db`);
 const {
   mockArticles,

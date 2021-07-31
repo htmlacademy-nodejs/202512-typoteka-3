@@ -3,7 +3,7 @@ const request = require(`supertest`);
 const Sequelize = require(`sequelize`);
 
 const search = require(`./search`);
-const DataService = require(`../data-service/search-service`);
+const {SearchService} = require(`../data-service/index`);
 const initDB = require(`../lib/init-db`);
 
 const {
@@ -21,7 +21,7 @@ const mockDB = new Sequelize(`sqlite::memory:`, {logging: false});
 
 beforeAll(async() => {
   await initDB(mockDB, mockArticles, mockCategories);
-  search(app, new DataService(mockDB));
+  search(app, new SearchService(mockDB));
 })
 
 describe(`API returns article based on search query`, () => {
