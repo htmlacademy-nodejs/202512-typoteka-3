@@ -1,10 +1,9 @@
+const path = require(`path`);
 const multer = require(`multer`);
 const {nanoid} = require(`nanoid`);
 
 const UPLOAD_DIR = `../upload/img/`;
 const MAX_SYMBOLS_FILENAME = 10;
-const path = require(`path`);
-
 const uploadDirAbsolute = path.resolve(__dirname, UPLOAD_DIR);
 
 class FileStorageService {

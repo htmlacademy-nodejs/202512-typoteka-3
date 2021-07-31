@@ -123,7 +123,7 @@ module.exports = {
     }
     logger.info(`Connection to database established`);
 
-    let countPublications = getCountPublications(args);
+    const countPublications = getCountPublications(args);
 
     const promisesRead = Object.values(FilePath).map((path) => readContent(path));
     const [titles, sentences, categories, comments, pictures] = await Promise.all(promisesRead);
