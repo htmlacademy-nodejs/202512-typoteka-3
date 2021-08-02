@@ -8,7 +8,7 @@ if (somethingIsNotDefined) {
   throw new Error(`One or more environmental variables are not defined`);
 }
 
-module.exports = new Sequelize(DB_NAME, DB_USER, DB_PASSWORD, {
+const initSequelize = () => new Sequelize(DB_NAME, DB_USER, DB_PASSWORD, {
   host: DB_HOST,
   port: DB_PORT,
   dialect: `postgres`,
@@ -19,3 +19,5 @@ module.exports = new Sequelize(DB_NAME, DB_USER, DB_PASSWORD, {
     idle: 10000
   }
 });
+
+module.exports = initSequelize;

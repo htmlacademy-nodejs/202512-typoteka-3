@@ -57,20 +57,33 @@ const LoginOptions = {
 };
 
 /**
- * @param {API} api
+ * @param {ArticleService} articleService
+ * @param {CategoryService} categoryService
  * @return {Router}
  */
-module.exports = (api) => {
+module.exports = (articleService, categoryService) => {
   const router = new Router();
 
   router.get(`/`, async (req, res) => {
-    const [articles, categories] = await Promise.all([api.getArticles(), api.getCategories()]);
-    const comments = articles.reduce((acc, article) => {
-      acc.push(...article.comments);
-      return acc;
-    }, []).slice(0, 3);
+    try {
+      const [articles, categories] = await Promise.all([
+        articleService.getAll({comments: true}),
+        categoryService.getAll(true)
+      ]);
 
-    res.render(`pages/main`, {articles, categories, comments, isUser: true});
+      const hotArticles = articleService.getHotArticles(articles);
+      const lastComments = articleService.getLastComments(articles);
+
+      return res.render(`pages/main`, {
+        articles, // TODO: пагинация?
+        hotArticles,
+        comments: lastComments,
+        categories,
+        isUser: true
+      });
+    } catch (ex) {
+      return res.render(`pages/500`);
+    }
   });
 
   router.get(`/register`, (req, res) => res.render(`pages/sign-up`,
@@ -92,14 +105,14 @@ module.exports = (api) => {
     const {search} = req.query;
     let results = [];
     if (search) {
-      results = await api.search(search);
+      results = await articleService.getAllBySearchQuery(search);
     }
 
     res.render(`pages/search`, {isGuest: true, results});
   });
 
   router.get(`/categories`, async (req, res) => {
-    const categories = await api.getCategories();
+    const categories = await categoryService.getAll(true);
     res.render(`pages/all-categories`, {categories, isAdmin: true});
   });
 

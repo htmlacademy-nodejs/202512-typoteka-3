@@ -2,6 +2,15 @@ const express = require(`express`);
 const path = require(`path`);
 const chalk = require(`chalk`);
 const api = require(`./api`).getAPI();
+const getMainRoutes = require(`./routes/main`);
+const getMyRoutes = require(`./routes/my`);
+const getArticleRoutes = require(`./routes/articles`);
+
+const {
+  ArticleService,
+  CategoryService,
+  FileStorageService
+} = require(`./data-service/index`);
 
 const DEFAULT_PORT = 8080;
 const Dir = {
@@ -10,9 +19,13 @@ const Dir = {
   TEMPLATES: `templates`
 };
 
-const mainRoutes = require(`./routes/main`)(api);
-const myRoutes = require(`./routes/my`)(api);
-const articlesRoutes = require(`./routes/articles`)(api);
+const articleService = new ArticleService(api);
+const categoryService = new CategoryService(api);
+const fileStorageService = new FileStorageService();
+
+const mainRoutes = getMainRoutes(articleService, categoryService);
+const myRoutes = getMyRoutes(articleService);
+const articlesRoutes = getArticleRoutes(articleService, categoryService, fileStorageService);
 
 const app = express();
 

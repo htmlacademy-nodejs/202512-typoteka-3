@@ -1,7 +1,7 @@
 const express = require(`express`);
-const routes = require(`./api`);
-const sequelize = require(`../lib/sequelize`);
 const {getLogger} = require(`../lib/logger`);
+const getSequelize = require(`../lib/sequelize`);
+const getRoutes = require(`../api/index`);
 const {
   HttpCode,
   ExitCode
@@ -14,8 +14,10 @@ const logger = getLogger({name: `api`});
 module.exports = {
   name: `--server`,
   async run(args) {
+    let sequelize;
     try {
       logger.info(`Trying to connect to database...`);
+      sequelize = getSequelize();
       await sequelize.authenticate();
     } catch (ex) {
       logger.error(`An error occured: ${ex.message}`);
@@ -37,6 +39,7 @@ module.exports = {
       next();
     });
 
+    const routes = getRoutes(sequelize);
     app.use(`/api`, routes);
 
 

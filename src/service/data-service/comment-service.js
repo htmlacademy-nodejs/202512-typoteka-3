@@ -1,47 +1,48 @@
-const {nanoid} = require(`nanoid`);
-const {
-  MAX_ID_LENGTH
-} = require(`../../constants`);
+/**
+ * @typedef {*} Comment
+ */
 
 class CommentService {
+  constructor(sequelize) {
+    this._Article = sequelize.models.Article;
+    this._Comment = sequelize.models.Comment;
+  }
+
   /**
    * Возвращает комментарии к статье
-   * @param {Array<Article>} articles
-   * @param {string} id
+   * @param {number} articleId
    * @return {Array<Comment>}
    */
-  findAll(articles, id) {
-    const article = articles.find((it) => it.id === id);
-    return article.comments;
+  findAll(articleId) {
+    return this._Comment.findAll({
+      where: {articleId},
+      raw: true
+    });
   }
 
   /**
    * Добавляет комментарий к статье
-   * @param {Article} article
-   * @param {any} comment
+   * @param {number} articleId
+   * @param {Partial<Comment>} comment
    * @return {Comment}
    */
-  create(article, comment) {
-    const newComment = Object.assign({
-      id: nanoid(MAX_ID_LENGTH),
-      articleId: article.id,
-      articleTitle: article.title,
-      createdDate: new Date().toISOString()
-    }, comment);
-
-    article.comments.push(newComment);
-    return newComment;
+  create(articleId, comment) {
+    return this._Comment.create({
+      articleId,
+      ...comment
+    });
   }
 
-  drop(article, commentId) {
-    const comment = article.comments.find((item) => item.id === commentId);
-
-    if (!comment) {
-      return false;
-    }
-
-    article.comments = article.comments.filter((item) => item.id !== commentId);
-    return true;
+  /**
+   * Удаляет комментарий
+   * @param {number} id
+   * @return {boolean}
+   */
+  async drop(id) {
+    const deletedRows = await this._Comment.destroy({
+      where: {id}
+    });
+    return !!deletedRows;
   }
 }
 

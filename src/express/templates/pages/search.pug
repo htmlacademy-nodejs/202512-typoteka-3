@@ -14,7 +14,6 @@ block content
         each result in results
           .search__result
             time.search__date(datetime=result.createdDate) #{result.dateDisplay}
-            a.search__link
-              #{result.announce}
+            a.search__link=result.announce
       else if (results.length === 0)
         p.search-page__empty Ничего не нашлось

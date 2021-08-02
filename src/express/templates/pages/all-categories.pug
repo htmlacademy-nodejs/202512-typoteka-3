@@ -15,11 +15,11 @@ block content
           button.category__button.button.button--category(type='submit') Добавить
       ul.category__list
         each category, i in categories
-          - var id = 'modify-form' + category.name
+          - var id = 'modify-form' + category.title
           - var additionalClass = i === categories.length - 1 ? 'category__list-item--last' : '';
           li.category__list-item(class=additionalClass)
             form(action='#' method='POST')
-              input(id=id type='text' name=category.name value=category.name)
+              input(id=id type='text' name=category.title value=category.title)
               label(for='id')
                 span.visually-hidden Редактировать категорию
               button.category__button.button.button--category(type='submit') Сохранить
