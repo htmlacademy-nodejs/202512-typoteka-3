@@ -56,6 +56,37 @@ describe(`API returns a list of all articles`, () => {
   test(`First article's id equals 1`, () => expect(response.body[0].id).toBe(1));
 });
 
+describe(`API returns articles to the page`, () => {
+  let response;
+
+  beforeAll(async () => {
+    const app = await createAPI();
+    response = await request(app)
+      .get(`/articles?offset=1&limit=2`);
+  });
+
+  it(`Returns a list of 3 articles starting with 2`, () => {
+    expect(response.body.articles.length).toBe(2);
+    expect(response.body.articles[0].id).toBe(2);
+    expect(response.body.count).toBe(3);
+  });
+});
+
+describe(`API returns limited number of articles ordered by comments count`, () => {
+  let response;
+
+  beforeAll(async () => {
+    const app = await createAPI();
+    response = await request(app)
+      .get(`/articles/hot?limit=2`);
+  });
+
+  it(`Returns a list of 3 articles starting with 2`, () => {
+    expect(response.body.length).toBe(2);
+    expect(response.body[0].id).toBe(2);
+  })
+})
+
 describe(`API returns an article with given id`, () => {
   let response;
 

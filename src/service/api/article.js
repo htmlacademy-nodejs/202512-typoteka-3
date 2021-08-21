@@ -23,9 +23,28 @@ module.exports = (app, articleService, commentService) => {
 
   /** Возвращает список публикаций */
   route.get(`/`, async (req, res) => {
-    const {comments} = req.query;
-    const articles = await articleService.findAll(comments);
-    return res.status(HttpCode.OK).json(articles);
+    let {offset, limit, comments} = req.query;
+    comments = comments === `true`;
+    limit = Number.parseInt(limit, 10);
+    offset = Number.parseInt(offset, 10);
+    let result;
+
+    if (limit || offset) {
+      result = await articleService.findPage(limit, offset);
+    } else {
+      result = await articleService.findAll(comments);
+    }
+
+    return res.status(HttpCode.OK).json(result);
+  });
+
+  route.get(`/hot`, async (req, res) => {
+    let {limit} = req.query;
+    limit = Number.parseInt(limit, 10);
+
+    const result = await articleService.findHotArticles(limit);
+
+    return res.status(HttpCode.OK).json(result);
   });
 
   /** Возвращает полную информацию о публикации */

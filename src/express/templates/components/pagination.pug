@@ -1,11 +1,10 @@
 ul.pagination(class=additionalClass)
   li
     a.pagination__button.button.button--backwards.button--disabled(href='#' aria-label='Страница назад') Назад
-  - var n = 0;
-    while (n < 5)
-      - var additionalClass = n === 0 ? 'pagination__item--active' : '';
-      li.pagination__item.pagination__item--active
-        a(href='#') #{n + 1}
+  - var n = 1;
+    while (n <= pagination.pageCount)
+      li.pagination__item(class=pagination.currentPage === n ? 'pagination__item--active':'')
+        a(href='?page='+n) #{n}
       - n++
   li
     a.pagination__button.button.button--forward(href='#' aria-label='Страница вперед') Вперед

@@ -1,7 +1,5 @@
-const Quantity = {
-  ARTICLES_HOT: 4,
-  COMMENT_LAST: 3
-};
+const ARTICLES_PER_PAGE = 8;
+const HOT_ARTICLES_COUNT = 4;
 
 class ArticleService {
   /**
@@ -14,10 +12,35 @@ class ArticleService {
   /**
    * Получает и возвращает список статей
    * @param {boolean} comments
+   * @param {number} offset
+   * @param {number} limit
    * @return {Promise<Array<Article>>}
    */
-  async getAll({comments}) {
-    return this._api.get(`/articles`, {params: {comments}});
+  async getAll(comments, offset = undefined, limit = undefined) {
+    return this._api.get(`/articles`, {params: {offset, limit, comments}});
+  }
+
+  /**
+   * Получает и возвращает список статей на страницу
+   * @param {number} page
+   * @param {boolean} comments
+   * @return {Promise<Array<Article>>}
+   */
+  async getAllByPage(page = 1, comments) {
+    const limit = ARTICLES_PER_PAGE;
+    const offset = (page - 1) * limit;
+
+    return this.getAll(comments, offset, limit);
+  }
+
+  /**
+   * Возвращает самые комментируемые статьи
+   * @return {Promise<Array<{id: number, title: string, announce: string, commentsCount: number, categories: number[] }>>}
+   */
+  async getHotArticles() {
+    const limit = HOT_ARTICLES_COUNT;
+
+    return this._api.get(`/articles/hot`, {params: {limit}});
   }
 
   /**
@@ -66,46 +89,28 @@ class ArticleService {
     return this._api.delete(`/articles/${id}`);
   }
 
-  /**
-   * Получает данные для создания/обновления статьи из объекта запроса
-   * @param {Request} req
-   * @return { {picture: string, title: string, categories: string[], announce: string, fullText: string} }
-   */
-  getArticleData(req) {
-    const {body, file} = req;
 
+  /**
+   * @param {{title: string, category: Array<number>, announce: string, fullText: string}} data
+   * @param {File} file
+   * @return {{fullText, categories, title, picture: string, announce}}
+   */
+  getArticleData({title, category, announce, fullText}, file) {
     return {
       picture: file ? file.filename : ``,
-      title: body.title,
-      categories: body.category,
-      announce: body.announce,
-      fullText: body.fullText
+      title,
+      categories: category,
+      announce,
+      fullText
     };
   }
 
   /**
-   * Возвращает самые обсуждаемые статьи
-   * @param {Array<Article>} articles
-   * @return {Array<Article>}
+   * @param {number} articleCount
+   * @return {number}
    */
-  getHotArticles(articles) {
-    return articles
-      .slice(0)
-      .sort((a, b) => b.comments.length - a.comments.length)
-      .slice(0, Quantity.ARTICLES_HOT);
-  }
-
-  /**
-   * Возвращает последние комментарии
-   * @param {Array<Article>} articles
-   * @return {Array<Comment>}
-   */
-  getLastComments(articles) {
-    return articles
-      .map((article) => article.comments)
-      .flat()
-      .sort((a, b) => Date.parse(b.createdAt) - Date.parse(a.createdAt))
-      .slice(0, Quantity.COMMENT_LAST);
+  calculatePages(articleCount) {
+    return articleCount > ARTICLES_PER_PAGE ? +(articleCount / ARTICLES_PER_PAGE).toFixed(0) + 1 : 1;
   }
 }
 
