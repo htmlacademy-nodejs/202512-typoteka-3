@@ -76,7 +76,7 @@ module.exports = (articleService, categoryService, commentService) => {
       ]);
 
       const pagination = {
-        currentPage: +page || 1,
+        currentPage: Number(page) || 1,
         pageCount: articleService.calculatePages(articleData.count)
       };
 

@@ -16,7 +16,7 @@ class ArticleService {
    * @param {number} limit
    * @return {Promise<Array<Article>>}
    */
-  async getAll(comments, offset = undefined, limit = undefined) {
+  async getAll(comments, offset, limit) {
     return this._api.get(`/articles`, {params: {offset, limit, comments}});
   }
 
@@ -110,7 +110,7 @@ class ArticleService {
    * @return {number}
    */
   calculatePages(articleCount) {
-    return articleCount > ARTICLES_PER_PAGE ? +(articleCount / ARTICLES_PER_PAGE).toFixed(0) + 1 : 1;
+    return articleCount > ARTICLES_PER_PAGE ? Math.ceil(articleCount / ARTICLES_PER_PAGE) : 1;
   }
 }
 
