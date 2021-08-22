@@ -21,6 +21,18 @@ class CommentService {
   }
 
   /**
+   * Возвращает последние комментарии
+   * @param {number} limit
+   * @return {Array<Comment>}
+   */
+  findLastComments(limit) {
+    return this._Comment.findAll({
+      order: [[`createdAt`, `DESC`]],
+      limit
+    });
+  }
+
+  /**
    * Добавляет комментарий к статье
    * @param {number} articleId
    * @param {Partial<Comment>} comment

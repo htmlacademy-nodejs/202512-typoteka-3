@@ -2,6 +2,7 @@ const {Router} = require(`express`);
 const article = require(`./article`);
 const category = require(`./category`);
 const search = require(`./search`);
+const comment = require(`./comment`);
 const {
   ArticleService,
   CommentService,
@@ -16,9 +17,12 @@ module.exports = (sequelize) => {
   defineModels(sequelize);
 
   (async () => {
-    article(app, new ArticleService(sequelize), new CommentService(sequelize));
+    const commentService = new CommentService(sequelize);
+
+    article(app, new ArticleService(sequelize), commentService);
     category(app, new CategoryService(sequelize));
     search(app, new SearchService(sequelize));
+    comment(app, commentService);
   })();
 
   return app;

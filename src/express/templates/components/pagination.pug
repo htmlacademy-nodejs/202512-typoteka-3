@@ -1,11 +1,17 @@
+style.
+  .active a,
+  a.active {
+    pointer-events: none;
+  }
 ul.pagination(class=additionalClass)
   li
-    a.pagination__button.button.button--backwards.button--disabled(href='#' aria-label='Страница назад') Назад
-  - var n = 0;
-    while (n < 5)
-      - var additionalClass = n === 0 ? 'pagination__item--active' : '';
-      li.pagination__item.pagination__item--active
-        a(href='#') #{n + 1}
+    - var prevLink = pagination.currentPage > 1 ? `?page=${(pagination.currentPage - 1)}` : '';
+    a.pagination__button.button.button--backwards(href=prevLink class={['button--disabled active']: pagination.currentPage <= 1} aria-label='Страница назад') Назад
+  - var n = 1;
+    while (n <= pagination.pageCount)
+      li.pagination__item(class={['pagination__item--active active']: pagination.currentPage === n})
+        a(href=`?page=${n}`) #{n}
       - n++
   li
-    a.pagination__button.button.button--forward(href='#' aria-label='Страница вперед') Вперед
+    - var nextLink = pagination.currentPage < pagination.pageCount ? `?page=${+pagination.currentPage + 1}` : '';
+    a.pagination__button.button.button--forward(href=nextLink class={['button--disabled active']: pagination.currentPage === pagination.pageCount} aria-label='Страница вперед') Вперед

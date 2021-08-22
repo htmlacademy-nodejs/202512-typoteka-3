@@ -16,7 +16,8 @@ module.exports = (articleService, categoryService, fileStorageService) => {
 
   router.post(`/add`, fileStorageService.getSingleUploadFn(), async (req, res) => {
     try {
-      const articleData = articleService.getArticleData(req);
+      const {body, file} = req;
+      const articleData = articleService.getArticleData(body, file);
       await articleService.createOne(articleData);
       return res.redirect(`/my`);
     } catch (ex) {
@@ -38,7 +39,8 @@ module.exports = (articleService, categoryService, fileStorageService) => {
   router.post(`/edit/:id`, fileStorageService.getSingleUploadFn(), async (req, res) => {
     const id = req.params[`id`];
     try {
-      const articleData = articleService.getArticleData(req);
+      const {body, file} = req;
+      const articleData = articleService.getArticleData(body, file);
       await articleService.changeOne(id, articleData);
       return res.redirect(`/my`);
     } catch (ex) {

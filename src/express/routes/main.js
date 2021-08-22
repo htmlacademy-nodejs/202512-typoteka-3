@@ -59,26 +59,33 @@ const LoginOptions = {
 /**
  * @param {ArticleService} articleService
  * @param {CategoryService} categoryService
+ * @param {CommentService} commentService
  * @return {Router}
  */
-module.exports = (articleService, categoryService) => {
+module.exports = (articleService, categoryService, commentService) => {
   const router = new Router();
 
   router.get(`/`, async (req, res) => {
     try {
-      const [articles, categories] = await Promise.all([
-        articleService.getAll({comments: true}),
+      const {page} = req.query;
+      const [articleData, hotArticles, lastComments, categories] = await Promise.all([
+        articleService.getAllByPage(page, true),
+        articleService.getHotArticles(),
+        commentService.getLast(),
         categoryService.getAll(true)
       ]);
 
-      const hotArticles = articleService.getHotArticles(articles);
-      const lastComments = articleService.getLastComments(articles);
+      const pagination = {
+        currentPage: Number(page) || 1,
+        pageCount: articleService.calculatePages(articleData.count)
+      };
 
       return res.render(`pages/main`, {
-        articles, // TODO: пагинация?
+        articleData,
         hotArticles,
         comments: lastComments,
         categories,
+        pagination,
         isUser: true
       });
     } catch (ex) {
